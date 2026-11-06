@@ -2,7 +2,7 @@
 
 Recomendação de refeições e busca conversacional com dados reais da Delivery Hero.
 
-**Status: pipeline e referências de recomendação implementados.** Auditoria CSV, importação relacional em SQLite e avaliação temporal executam localmente. Há três recomendadores de referência e uma demonstração sintética. Os arquivos DHRD ainda não foram obtidos; não há métricas reais, interface ou integração com LLM nesta versão.
+**Status: cópia real derivada do DHRD obtida e verificada.** Baixamos o arquivo pré-processado publicado pelos autores do HyperHawkes: 740.707 interações, 122.931 usuários, 41.695 itens e 1.148 estabelecimentos. Há nomes reais de itens e IDs de vendedores. Ainda falta adaptar esse formato ao pipeline e medir os recomendadores; a interface e o LLM permanecem planejados.
 
 ## Produto proposto
 
@@ -20,12 +20,14 @@ python -m venv .venv
 python -m pip install -e .
 python -m meal_discovery --help
 python -m unittest discover -s tests -v
-python -m meal_discovery demo --output-dir reports/synthetic-demo-v1
+python scripts/fetch_hyperhawkes.py
 ```
 
-O último comando usa pequenos exemplos inventados para conferir o funcionamento e identifica explicitamente `data_kind: synthetic`. Ele não mede a qualidade do projeto nos dados da Delivery Hero.
+O último comando baixa uma versão fixa do arquivo real, confere tamanho e hash Git e grava os dados em `data/raw/hyperhawkes-dhrd/`, ignorado pelo Git. Reexecução confere a cópia local. O manifesto registra procedência e contagens.
 
-Para dados reais, obtenha os arquivos pela [fonte oficial](https://github.com/deliveryhero/dh-reco-dataset), confira os termos e inspecione o formato. O link oficial está redirecionando para login nesta verificação; [situação de acesso](docs/DATA_ACCESS.md). Arquivos compactados/Parquet ainda não são lidos.
+É uma distribuição acadêmica derivada; a distribuição original completa da Delivery Hero continua exigindo acesso. A cópia obtida não traz preço, categoria de culinária ou geohash. Ver [procedência e limites](docs/DATA_ACCESS.md). Arquivos compactados/Parquet ainda não são lidos.
+
+**Política de dados reais:** comandos públicos de preparação e benchmark rejeitam fontes marcadas como sintéticas. O comando `demo` foi removido. Pequenas fixtures inventadas ficam exclusivamente em `tests/`; não há fallback sintético no produto.
 
 ```sh
 python -m meal_discovery audit --input-dir data/raw --output reports/data-audit.json
@@ -64,7 +66,7 @@ tests/             verificações de integridade do auditor
 - [Explicação da implementação para estudo](docs/LEARNING.md)
 - [Registro de decisões](docs/DECISIONS.md)
 
-As funcionalidades serão marcadas como entregues apenas com execução e evidência. Este repositório está em desenvolvimento; dados reais, LLM e produto visual permanecem como próximos marcos.
+As funcionalidades serão marcadas como entregues apenas com execução e evidência. Este repositório está em desenvolvimento; adaptação da cópia real, LLM e produto visual permanecem como próximos marcos.
 
 ## Fontes
 

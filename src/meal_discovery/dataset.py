@@ -111,9 +111,11 @@ def insert_unique(connection, table: str, values: tuple, key_columns: tuple, key
     return True
 
 
-def prepare_dataset(config_path: Path, output: Path) -> dict:
+def prepare_dataset(config_path: Path, output: Path, *, allow_test_data: bool = False) -> dict:
     """Fail on ambiguous/orphan records; never replace an existing database."""
     config, sources = read_source(config_path)
+    if config["data_kind"] != "dhrd" and not allow_test_data:
+        raise ValueError("Real data required. Synthetic fixtures are restricted to automated tests")
     if output.suffix.lower() != ".sqlite":
         raise ValueError("Dataset output must end in .sqlite")
     if output.exists():

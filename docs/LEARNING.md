@@ -24,4 +24,4 @@ Os exemplos sintéticos são pequenos registros inventados para testar o código
 
 ## Exercício de compreensão
 
-Na demonstração sintética, um perfil novo compra um item que não aparece no treino. Confira no relatório por que ele conta como erro e por que removê-lo do cálculo melhoraria artificialmente a métrica. Depois, localize o teste que adiciona compras futuras sem alterar a validação anterior.
+No teste automatizado, um perfil novo compra um item que não aparece no treino. Confira no código por que ele conta como erro e por que removê-lo do cálculo melhoraria artificialmente a métrica. Depois, localize o teste que adiciona compras futuras sem alterar a validação anterior. Esse cenário fica só nos testes; produto e experimentos usam dados reais.

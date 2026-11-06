@@ -1,6 +1,6 @@
 # Arquitetura proposta
 
-Implementados: auditor CSV, mapeamento explícito, importação relacional em SQLite e benchmark de três recomendadores. Verificação com fixtures sintéticas, sem arquivos DHRD. API, índices de busca, agente, frontend e n8n permanecem planejados.
+Implementados: auditor CSV, mapeamento explícito, importação relacional em SQLite e benchmark de três recomendadores. A cópia real derivada do DHRD foi baixada e auditada; falta adaptar seu formato para treinamento. Fixtures sintéticas existem somente em testes. API, índices de busca, agente, frontend e n8n permanecem planejados.
 
 Fluxo executável atual: CSVs com mapeamento explícito → contratos e hashes → SQLite somente leitura para análise → perfis de treino congelados → popularidade/repetição/cosseno → relatório de avaliação. SQLite foi escolhido para integridade e transações sem dependência de execução adicional; a arquitetura abaixo permanece a visão de evolução.
 

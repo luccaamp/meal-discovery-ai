@@ -6,10 +6,18 @@ import sys
 import tempfile
 import unittest
 
-from meal_discovery.benchmark import benchmark, ranking_metrics
-from meal_discovery.dataset import open_dataset, prepare_dataset
-from meal_discovery.demo import write_synthetic_source
+from meal_discovery.benchmark import benchmark as real_benchmark, ranking_metrics
+from meal_discovery.dataset import open_dataset, prepare_dataset as real_prepare_dataset
+from synthetic_support import write_synthetic_source
 from meal_discovery.recommendation import Recommender
+
+
+def prepare_dataset(config, output):
+    return real_prepare_dataset(config, output, allow_test_data=True)
+
+
+def benchmark(database, **options):
+    return real_benchmark(database, allow_test_data=True, **options)
 
 
 class DatasetContractTests(unittest.TestCase):
@@ -139,36 +147,32 @@ class RankingTests(unittest.TestCase):
 
 
 class CommandLineTests(unittest.TestCase):
-    def test_prepare_and_benchmark_commands_with_explicit_mapping(self):
+    def test_public_prepare_and_benchmark_reject_synthetic_data(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
             config = write_synthetic_source(root / "raw")
             prefix = [sys.executable, "-m", "meal_discovery"]
             prepare = subprocess.run(prefix + ["prepare", "--config", str(config), "--output",
                                                str(root / "dataset.sqlite")], capture_output=True, text=True)
-            self.assertEqual(prepare.returncode, 0, prepare.stderr)
+            self.assertEqual(prepare.returncode, 2)
+            self.assertIn("Real data required", prepare.stderr)
+            self.assertFalse((root / "dataset.sqlite").exists())
+            prepare_dataset(config, root / "dataset.sqlite")
             command = prefix + ["benchmark", "--database", str(root / "dataset.sqlite"),
                                 "--train-end-day", "1", "--eval-end-day", "2", "--k", "2",
                                 "--output", str(root / "results.json")]
             result = subprocess.run(command, capture_output=True, text=True)
-            self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertIn("synthetic", result.stdout)
-            before = (root / "results.json").read_bytes()
-            retry = subprocess.run(command, capture_output=True, text=True)
-            self.assertEqual(retry.returncode, 2)
-            self.assertEqual(before, (root / "results.json").read_bytes())
+            self.assertEqual(result.returncode, 2)
+            self.assertIn("Real data required", result.stderr)
+            self.assertFalse((root / "results.json").exists())
 
-    def test_demo_reports_synthetic_status_and_protects_existing_output(self):
+    def test_synthetic_demo_is_not_a_product_command(self):
         with tempfile.TemporaryDirectory() as folder:
             output = Path(folder) / "demo"
             command = [sys.executable, "-m", "meal_discovery", "demo", "--output-dir", str(output)]
             result = subprocess.run(command, capture_output=True, text=True)
-            self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertIn("SYNTHETIC", result.stdout)
-            report = json.loads((output / "benchmark.json").read_text(encoding="utf-8"))
-            self.assertEqual(report["data_kind"], "synthetic")
-            retry = subprocess.run(command, capture_output=True, text=True)
-            self.assertEqual(retry.returncode, 2)
+            self.assertEqual(result.returncode, 2)
+            self.assertFalse(output.exists())
 
 
 if __name__ == "__main__":

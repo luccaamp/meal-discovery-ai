@@ -22,3 +22,12 @@ Template dos próximos registros: hipótese → alteração → comparação →
 - Decisão: não escolher cidade, inventar métricas ou trocar a base. SQLite usa biblioteca padrão e garante integridade nesta etapa; DuckDB/Parquet serão reconsiderados a partir dos arquivos e medições.
 - Próxima ação: obter distribuição oficial acessível e validar o adaptador. Funções de catálogo e API poderão avançar em paralelo com os contratos conhecidos.
 - Assistência: implementação e documentação produzidas com Codex; compreensão e revisão pelo candidato ainda precisam ser verificadas.
+
+## 2026-11-06 — Aquisição real e remoção de demonstração sintética
+
+- Pedido do usuário: usar dados reais sempre no produto e procurar cópias públicas/API em vez de aguardar exclusivamente o Drive.
+- Pesquisa: API GitHub, fork oficial, repositórios de análises, projetos dos autores e links públicos de distribuição. O pacote original e o link direto de Singapura exigiram login. Não foi encontrada API pública do DHRD.
+- Resultado: arquivo público real dos autores do HyperHawkes baixado, conferido por tamanho e hash Git fixados, com SHA-256 registrado. Auditoria completa em `DATA_ACCESS.md`.
+- Correção: removido o comando `demo`; gerador de exemplos transferido para `tests/`. Preparação e benchmark recusam fontes sintéticas por padrão; habilitação interna existe somente para testes e não está exposta na CLI.
+- Limite: a cópia derivada não contém todos os atributos do pacote original. Nenhum dado ausente foi inventado, e não foi treinado um modelo real nesta etapa.
+- Próxima decisão: definir contrato de sessões e tempo, adaptar os campos reais e avaliar referências nesse recorte. Continuar o pedido de acesso ao original para possível enriquecimento.

@@ -5,19 +5,19 @@
 1. `audit`: inventário de CSVs.
 2. `prepare`: valida arquivos com mapeamento explícito e cria um banco SQLite local.
 3. `benchmark`: compara popularidade, repetição histórica e similaridade colaborativa de itens.
-4. `demo`: executa esse caminho com um exemplo pequeno inventado e marcado como sintético.
+4. `scripts/fetch_hyperhawkes.py`: baixa a cópia pública real pré-processada do DHRD e verifica o hash.
 
-Nenhum resultado de DHRD foi medido. O formato real dos arquivos ainda não foi inspecionado. O adaptador abaixo é um contrato de entrada configurável baseado nos campos descritos no artigo, não um parser já validado com os arquivos oficiais.
+Nenhum resultado de recomendação em DHRD foi medido. O arquivo derivado real está disponível localmente; sua adaptação ainda precisa ser implementada. O importador de três CSVs abaixo é um contrato configurável para o pacote original, não um parser validado com seus arquivos.
 
-## Experimentar o código agora
+## Obter dados reais agora
 
 Após a instalação descrita no README:
 
 ```sh
-python -m meal_discovery demo --output-dir reports/synthetic-demo-v1
+python scripts/fetch_hyperhawkes.py
 ```
 
-Esse comando cria CSVs, um SQLite e `benchmark.json` dentro da pasta indicada. Os nomes de produtos e usuários são inventados. Não reutiliza a pasta se ela já existir. Para repetir, escolha `synthetic-demo-v2`.
+Esse comando baixa o arquivo real para `data/raw/hyperhawkes-dhrd/` e registra procedência e auditoria. Ver [campos e limites](DATA_ACCESS.md). O comando de demonstração sintética foi removido; CLI de preparação e benchmark exigem dados reais. As fixtures artificiais existem apenas nos testes automatizados.
 
 ## Preparar dados reais quando disponíveis
 

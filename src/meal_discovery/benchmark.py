@@ -52,7 +52,8 @@ def aggregate(rows):
 
 
 def benchmark(database: Path, *, train_end_day: int, eval_end_day: int,
-              split: str = "validation", k: int = 10, max_users: int | None = None) -> dict:
+              split: str = "validation", k: int = 10, max_users: int | None = None,
+              allow_test_data: bool = False) -> dict:
     if train_end_day < 0 or eval_end_day <= train_end_day or k < 1:
         raise ValueError("Require 0 <= train_end_day < eval_end_day and k > 0")
     if split not in {"validation", "test"} or (max_users is not None and max_users < 1):
@@ -60,6 +61,8 @@ def benchmark(database: Path, *, train_end_day: int, eval_end_day: int,
     connection = open_dataset(database)
     try:
         manifest = json.loads(connection.execute("SELECT value FROM metadata WHERE key='manifest'").fetchone()[0])
+        if manifest.get("data_kind") not in {"dhrd", "real_preprocessed_derivative"} and not allow_test_data:
+            raise ValueError("Real data required. Synthetic fixtures are restricted to automated tests")
         started = perf_counter()
         model = Recommender(baskets(connection, -1, train_end_day))
         fit_ms = (perf_counter() - started) * 1000

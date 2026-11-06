@@ -9,7 +9,6 @@ import sqlite3
 from .audit import audit_directory
 from .benchmark import benchmark
 from .dataset import prepare_dataset
-from .demo import run_demo
 
 
 def write_report(path: Path, result: dict):
@@ -39,8 +38,6 @@ def main() -> int:
     evaluate.add_argument("--k", type=int, default=10)
     evaluate.add_argument("--max-users", type=int)
     evaluate.add_argument("--output", type=Path, required=True)
-    demo = commands.add_parser("demo", help="Run a small SYNTHETIC pipeline check, not a DHRD experiment")
-    demo.add_argument("--output-dir", type=Path, required=True)
     args = parser.parse_args()
     try:
         if args.command == "audit":
@@ -60,9 +57,6 @@ def main() -> int:
                                max_users=args.max_users)
             write_report(args.output, result)
             print(f"Benchmark ({result['data_kind']}, {args.split}): {args.output}")
-        else:
-            run_demo(args.output_dir)
-            print(f"SYNTHETIC pipeline check only. Not DHRD evidence. Files: {args.output_dir}")
     except (OSError, UnicodeError, LookupError, ValueError, TypeError, csv.Error, sqlite3.Error) as error:
         parser.exit(2, f"Operation failed: {error}\n")
     return 0

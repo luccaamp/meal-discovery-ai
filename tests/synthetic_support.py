@@ -1,11 +1,10 @@
-"""Small invented fixture to verify the pipeline, never a DHRD result."""
+"""Test-only fixture. Not packaged with the product or used by public commands."""
 
 import csv
 import json
 from pathlib import Path
 
-from .benchmark import benchmark
-from .dataset import CONTRACTS, prepare_dataset
+from meal_discovery.dataset import CONTRACTS
 
 
 def write_synthetic_source(directory: Path) -> Path:
@@ -36,13 +35,3 @@ def write_synthetic_source(directory: Path) -> Path:
     with path.open("x", encoding="utf-8") as stream:
         json.dump(config, stream, indent=2)
     return path
-
-
-def run_demo(directory: Path) -> dict:
-    if directory.exists():
-        raise ValueError("Choose a new demo output directory; existing files are never overwritten")
-    config = write_synthetic_source(directory / "raw")
-    prepare_dataset(config, directory / "dataset.sqlite")
-    result = benchmark(directory / "dataset.sqlite", train_end_day=1, eval_end_day=2, k=2)
-    (directory / "benchmark.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
-    return result
