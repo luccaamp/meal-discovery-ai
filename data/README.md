@@ -1,6 +1,6 @@
 # Dados
 
-Fonte original: [Delivery Hero Recommendation Dataset](https://github.com/deliveryhero/dh-reco-dataset). O README declara MIT e aponta para uma pasta que exige autorização. Já obtivemos a [cópia pública derivada dos autores do HyperHawkes](https://github.com/dbis-uibk/HyperHawkes), com 740.707 interações e nomes reais de itens. Ver [procedência, hashes e limites](../docs/DATA_ACCESS.md). Ela está em `data/raw/hyperhawkes-dhrd/`, fora do Git.
+Fonte original: [Delivery Hero Recommendation Dataset](https://github.com/deliveryhero/dh-reco-dataset). O README declara MIT e aponta para uma pasta que exige autorização. Já obtivemos a cópia derivada dos autores do HyperHawkes (Estocolmo) e as três tabelas do espelho público NearBite (Singapura), com pedidos, catálogo e vendedores. Ver [procedência, hashes e auditoria](../docs/DATA_ACCESS.md). Arquivos em `data/raw/hyperhawkes-dhrd/` e `data/raw/nearbite-sg/`, fora do Git. O pacote original completo ainda não foi obtido.
 
 O artigo descreve pedidos, produtos e vendedores de três cidades. Há preços normalizados, nomes multilíngues, IDs anonimizados e geografia aproximada. Não há garantia de fotos, ingredientes, alérgenos, estoque atual ou tempo de entrega.
 

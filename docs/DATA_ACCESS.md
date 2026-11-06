@@ -1,6 +1,40 @@
 # Dados reais obtidos e acesso à distribuição original
 
-Atualizado em 6/11/2026. **Uma cópia real derivada foi baixada automaticamente e verificada.** A distribuição original completa continua com acesso pendente, já solicitado pelo usuário.
+Atualizado em 6/11/2026. **Três tabelas reais de Singapura e um derivado de Estocolmo foram baixados automaticamente.** A distribuição original completa continua com acesso pendente, já solicitado pelo usuário. [Registro da busca ampliada](SOURCE_SEARCH_2026-11-06.md).
+
+## Cópia pública mais completa: Singapura
+
+Fonte dos links: [NearBite, revisão fixada](https://github.com/jpchawanda1/nearbite-recommender/blob/a58e7255e22fbf7ed60f4854c041a41ba5a5c454/scripts/download_data.py). O autor declara origem DHRD e informa que adicionou latitude/longitude decodificadas de geohash aos pedidos e estabelecimentos. Não executamos código de terceiros; implementamos downloader e auditor próprios. Os dados são identificados como `real_third_party_copy`: disponibilidade, formato e contagens foram verificados, mas não há comparação byte a byte com o pacote original.
+
+```sh
+python scripts/fetch_nearbite_sg.py
+python scripts/audit_nearbite_sg.py
+```
+
+Arquivos locais em `data/raw/nearbite-sg/`; total de 419.360.922 bytes. O manifesto registra URLs, SHA-256 e cabeçalhos. O relatório completo local é `reports/nearbite-sg-audit.json`.
+
+| Conteúdo verificado | Contagem |
+| --- | ---: |
+| Linhas de itens comprados | 3.431.870 |
+| Pedidos distintos | 1.709.414 |
+| Clientes distintos | 476.150 |
+| Produtos do catálogo | 1.066.840 |
+| Estabelecimentos | 7.411 |
+| Estabelecimentos presentes em compras | 7.203 |
+| Categorias de culinária distintas | 78 |
+| Dias relativos | 0 a 75 (76 dias) |
+
+Campos de catálogo: vendedor, produto, nome e preço normalizado. Estabelecimentos: vendedor, rede, geohash e culinária. Pedidos: cliente, geohash, pedido, vendedor, produto, dia da semana, horário e dia relativo. Colunas de índice de exportação são preservadas nos arquivos originais locais e devem ser ignoradas explicitamente na preparação.
+
+Integridade observada: zero chaves duplicadas de vendedor/produto; zero referências a vendedores inexistentes; zero pedidos com cliente/dia/horário conflitantes; zero preços inválidos ou negativos. **41 linhas de compra apontam para produtos ausentes no catálogo.** Ainda precisamos decidir e documentar o tratamento dessas linhas, sem inventar metadados. O auditor usa banco temporário local para verificar todas as relações e o remove ao concluir.
+
+Hashes SHA-256:
+
+- `vendors_sg_clean.csv`: `a0c4987daa7bd9f84b57ac04169fc04f7e9004d579884aa9c0a412a37d6c0f80`.
+- `products_sg.csv`: `63e981a45619a3a7e62af8a037ffb641e7410fee35e26b4882f9db6de5e1385c`.
+- `orders_sg_train_clean.csv`: `4d3ceb436c2f66872663357df223fb45b7cff9753c60ca70cd180f62d7acf1c6`.
+
+Não há teste oficial separado nessa cópia, nem arquivos completos das outras duas cidades. As contagens coincidem com a documentação do espelho. Preço não é valor em reais; geohash/coordenadas decodificadas não são localização exata ou confirmação de raio de entrega. O adaptador de treino ainda precisa lidar com cabeçalho de índice vazio e dias no formato textual de timedelta; não alterar os arquivos baixados para esconder essas diferenças.
 
 ## Distribuição acadêmica disponível
 

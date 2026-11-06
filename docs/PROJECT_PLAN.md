@@ -33,6 +33,8 @@ Planejamento indicativo: M0–M2 em 15–20h; M3–M4 em 15–20h; M5 em 12–18
 
 M0 entregue. A cópia real pré-processada do DHRD publicada pelos autores do HyperHawkes foi baixada, verificada por hash e auditada: 740.707 interações, 122.931 usuários, 41.695 itens e 1.148 vendedores. Contém nomes de itens e sessões; não contém preço, culinária ou geohash. Próximo marco: adaptar esse formato e auditar a semântica temporal/sessões antes de treinar. A distribuição original completa continua com acesso solicitado. Não há métricas reais de recomendação ainda. Aplicação e portfólio exigem dados reais; fixtures ficam apenas nos testes. Detalhes em [pipeline](DATA_PIPELINE.md) e [acesso](DATA_ACCESS.md).
 
+Atualização da busca ampliada: uma fonte mais rica de **Singapura** foi baixada e auditada, com 1.709.414 pedidos de treino, 1.066.840 produtos, 7.411 vendedores e 78 culinárias. Agora ela é a prioridade de preparação por fornecer preço normalizado e geohash. Há 41 linhas de itens sem produto no catálogo para tratamento documentado. O período cobre dias 0–75; falta teste oficial separado. Não juntar essa cidade ao derivado de Estocolmo nem afirmar aquisição das três cidades. Ver [busca completa](SOURCE_SEARCH_2026-11-06.md).
+
 Busca em linguagem natural pode facilitar encontrar opções quando a pessoa não conhece os nomes do catálogo. Personalização pode melhorar o ranking sobre popularidade. Explicações podem ajudar a entender recomendações. Todas exigem avaliação; registrar também resultados negativos.
 
 ## Engenharia de ML e LLM

@@ -2,7 +2,7 @@
 
 Recomendação de refeições e busca conversacional com dados reais da Delivery Hero.
 
-**Status: cópia real derivada do DHRD obtida e verificada.** Baixamos o arquivo pré-processado publicado pelos autores do HyperHawkes: 740.707 interações, 122.931 usuários, 41.695 itens e 1.148 estabelecimentos. Há nomes reais de itens e IDs de vendedores. Ainda falta adaptar esse formato ao pipeline e medir os recomendadores; a interface e o LLM permanecem planejados.
+**Status: três tabelas reais de Singapura baixadas e auditadas.** Uma cópia pública de terceiros disponibiliza 1.709.414 pedidos de treino, 1.066.840 produtos, 7.411 estabelecimentos e 78 categorias de culinária, com preço normalizado e geohash. Já temos também o derivado de Estocolmo do HyperHawkes. A distribuição original completa e o teste oficial continuam pendentes; não há modelo treinado ou interface publicada nesta versão.
 
 ## Produto proposto
 
@@ -21,11 +21,13 @@ python -m pip install -e .
 python -m meal_discovery --help
 python -m unittest discover -s tests -v
 python scripts/fetch_hyperhawkes.py
+python scripts/fetch_nearbite_sg.py
+python scripts/audit_nearbite_sg.py
 ```
 
-O último comando baixa uma versão fixa do arquivo real, confere tamanho e hash Git e grava os dados em `data/raw/hyperhawkes-dhrd/`, ignorado pelo Git. Reexecução confere a cópia local. O manifesto registra procedência e contagens.
+O primeiro downloader fixa revisão e hash Git do derivado HyperHawkes. O segundo obtém as três tabelas públicas de Singapura (419.360.922 bytes), confere tamanho/cabeçalho e registra SHA-256. Os arquivos ficam em `data/raw/`, ignorado pelo Git. O auditor examina todas as linhas e relações, sem publicar registros individuais. Escolha outro `--output` para repetir uma auditoria já salva.
 
-É uma distribuição acadêmica derivada; a distribuição original completa da Delivery Hero continua exigindo acesso. A cópia obtida não traz preço, categoria de culinária ou geohash. Ver [procedência e limites](docs/DATA_ACCESS.md). Arquivos compactados/Parquet ainda não são lidos.
+A cópia de Singapura tem pedidos dos dias relativos 0–75 e inclui preço normalizado, categoria de culinária e geohash; coordenadas adicionais foram derivadas do geohash pelo autor do espelho. O auditor encontrou 41 linhas de itens sem correspondência no catálogo, ainda sem tratamento para treino. Não afirmar equivalência byte a byte ao pacote original nem inventar dados faltantes. Ver [procedência e limites](docs/DATA_ACCESS.md) e [busca pela distribuição completa](docs/SOURCE_SEARCH_2026-11-06.md).
 
 **Política de dados reais:** comandos públicos de preparação e benchmark rejeitam fontes marcadas como sintéticas. O comando `demo` foi removido. Pequenas fixtures inventadas ficam exclusivamente em `tests/`; não há fallback sintético no produto.
 

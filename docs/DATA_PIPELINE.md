@@ -6,8 +6,9 @@
 2. `prepare`: valida arquivos com mapeamento explícito e cria um banco SQLite local.
 3. `benchmark`: compara popularidade, repetição histórica e similaridade colaborativa de itens.
 4. `scripts/fetch_hyperhawkes.py`: baixa a cópia pública real pré-processada do DHRD e verifica o hash.
+5. `scripts/fetch_nearbite_sg.py` e `scripts/audit_nearbite_sg.py`: obtêm e auditam as três tabelas reais do espelho público de Singapura.
 
-Nenhum resultado de recomendação em DHRD foi medido. O arquivo derivado real está disponível localmente; sua adaptação ainda precisa ser implementada. O importador de três CSVs abaixo é um contrato configurável para o pacote original, não um parser validado com seus arquivos.
+Nenhum resultado de recomendação em DHRD foi medido. O derivado de Estocolmo e três tabelas reais de Singapura estão disponíveis localmente. A auditoria de Singapura já examinou todas as tabelas e relações; a preparação para treino ainda precisa tratar o índice de exportação, dias textuais e 41 linhas com produto ausente no catálogo. O importador genérico abaixo ainda não incorpora essas transformações e não deve ser usado diretamente com os arquivos sem um adaptador explícito.
 
 ## Obter dados reais agora
 

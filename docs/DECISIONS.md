@@ -31,3 +31,12 @@ Template dos próximos registros: hipótese → alteração → comparação →
 - Correção: removido o comando `demo`; gerador de exemplos transferido para `tests/`. Preparação e benchmark recusam fontes sintéticas por padrão; habilitação interna existe somente para testes e não está exposta na CLI.
 - Limite: a cópia derivada não contém todos os atributos do pacote original. Nenhum dado ausente foi inventado, e não foi treinado um modelo real nesta etapa.
 - Próxima decisão: definir contrato de sessões e tempo, adaptar os campos reais e avaliar referências nesse recorte. Continuar o pedido de acesso ao original para possível enriquecimento.
+
+## 2026-11-06 — Cópia pública de Singapura com catálogo e contexto
+
+- Pedido: ampliar busca por todos os dados, incluindo bancos/catálogos públicos e espelhos de pesquisa.
+- Achado: NearBite publica três links de CSVs de Singapura acessíveis sem login. Baixados 419.360.922 bytes com downloader próprio, validação de tamanho/cabeçalho e manifesto SHA-256. A origem é declarada pelo espelho e as contagens conferem com sua documentação; equivalência byte a byte ao original permanece não verificada.
+- Auditoria real: 3.431.870 linhas de itens, 1.709.414 pedidos, 476.150 clientes, 1.066.840 produtos, 7.411 vendedores e 78 culinárias. Dias 0–75. Quarenta e uma linhas sem produto no catálogo; zero conflitos de cliente/dia/horário por pedido.
+- Comparação de fontes: esta cópia tem preço normalizado, culinária e geohash ausentes no derivado de Estocolmo. Priorizar Singapura para o produto, mantendo as fontes separadas e seus limites explícitos.
+- Limite: não foram obtidos os três ZIPs originais nem o teste separado. O carregador OmniRec revelou links e hashes de referência; os downloads continuaram exigindo acesso. Busca em catálogos públicos não encontrou o pacote integral.
+- Próxima ação: implementar adaptação do formato real e tratamento registrado das 41 linhas, depois reservar avaliação temporal própria. Não declarar a aquisição de todos os dados.
