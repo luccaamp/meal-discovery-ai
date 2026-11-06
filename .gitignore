@@ -27,5 +27,9 @@ reports/*
 *.safetensors
 *.pem
 *.key
+*.sqlite
+*.sqlite-*
+*.db
+configs/*.local.json
 .DS_Store
 Thumbs.db

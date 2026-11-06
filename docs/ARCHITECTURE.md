@@ -1,6 +1,8 @@
 # Arquitetura proposta
 
-Somente o auditor CSV existe nesta versão. Os outros componentes abaixo são planejados.
+Implementados: auditor CSV, mapeamento explícito, importação relacional em SQLite e benchmark de três recomendadores. Verificação com fixtures sintéticas, sem arquivos DHRD. API, índices de busca, agente, frontend e n8n permanecem planejados.
+
+Fluxo executável atual: CSVs com mapeamento explícito → contratos e hashes → SQLite somente leitura para análise → perfis de treino congelados → popularidade/repetição/cosseno → relatório de avaliação. SQLite foi escolhido para integridade e transações sem dependência de execução adicional; a arquitetura abaixo permanece a visão de evolução.
 
 ```mermaid
 flowchart LR
@@ -21,7 +23,7 @@ flowchart LR
   F -. extensão .-> MCP[Adaptador MCP]
 ```
 
-Python para dados e modelos; DuckDB/Parquet para processamento local; FastAPI para contratos; React/TypeScript e tokens CSS para interface. Versões de dependências e arquivo de lock serão fixados ao implementar cada componente e verificar compatibilidade. Não incluir dependências vazias apenas para aparência de completude.
+Python para dados e modelos; DuckDB/Parquet são opções futuras de processamento; FastAPI para contratos; React/TypeScript e tokens CSS para interface. Versões de dependências e arquivo de lock serão fixados ao implementar cada componente e verificar compatibilidade. Não incluir dependências vazias apenas para aparência de completude.
 
 Contratos candidatos: `search_catalog(query, filters, limit)`, `recommend(profile_id, filters, limit)`, `get_item(item_id)`, `get_evaluation(run_id)`. Saídas terão IDs, metadados, origem, versão e avisos de cobertura. Nunca aceitar SQL, código arbitrário ou URLs fornecidas pelo LLM para execução.
 

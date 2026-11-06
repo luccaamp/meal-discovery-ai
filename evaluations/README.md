@@ -1,6 +1,6 @@
 # Protocolo de avaliação
 
-Status: protocolo proposto. Não há resultados.
+Status: o protocolo inicial de primeira cesta futura está implementado e verificado com exemplos sintéticos; não há resultados DHRD. Consulte [comandos e definições exatas](../docs/DATA_PIPELINE.md). A avaliação de LLM e a busca permanecem planejadas.
 
 ## Recomendação e recuperação
 

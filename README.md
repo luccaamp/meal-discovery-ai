@@ -2,7 +2,7 @@
 
 Recomendação de refeições e busca conversacional com dados reais da Delivery Hero.
 
-**Status: estrutura inicial.** A auditoria genérica de CSVs funciona; os dados DHRD ainda não foram obtidos, os modelos não foram treinados e a interface e as integrações estão planejadas. Nenhum resultado ou uso em produção é alegado.
+**Status: pipeline e referências de recomendação implementados.** Auditoria CSV, importação relacional em SQLite e avaliação temporal executam localmente. Há três recomendadores de referência e uma demonstração sintética. Os arquivos DHRD ainda não foram obtidos; não há métricas reais, interface ou integração com LLM nesta versão.
 
 ## Produto proposto
 
@@ -20,9 +20,12 @@ python -m venv .venv
 python -m pip install -e .
 python -m meal_discovery --help
 python -m unittest discover -s tests -v
+python -m meal_discovery demo --output-dir reports/synthetic-demo-v1
 ```
 
-Obtenha os arquivos pela [fonte oficial](https://github.com/deliveryhero/dh-reco-dataset), confira os termos e extraia os CSVs em `data/raw/`. Download e formato efetivo ainda precisam de validação; arquivos compactados/Parquet não são lidos por este auditor inicial.
+O último comando usa pequenos exemplos inventados para conferir o funcionamento e identifica explicitamente `data_kind: synthetic`. Ele não mede a qualidade do projeto nos dados da Delivery Hero.
+
+Para dados reais, obtenha os arquivos pela [fonte oficial](https://github.com/deliveryhero/dh-reco-dataset), confira os termos e inspecione o formato. O link oficial está redirecionando para login nesta verificação; [situação de acesso](docs/DATA_ACCESS.md). Arquivos compactados/Parquet ainda não são lidos.
 
 ```sh
 python -m meal_discovery audit --input-dir data/raw --output reports/data-audit.json
@@ -30,12 +33,15 @@ python -m meal_discovery audit --input-dir data/raw --output reports/data-audit.
 
 O comando registra hashes, cabeçalhos, linhas, células vazias e larguras inconsistentes, sem exportar valores das linhas. Use `--delimiter` e `--encoding` se necessário. Não substitui auditoria relacional ou temporal. Nenhum CSV encontrado resulta em erro explícito, sem relatório de sucesso vazio.
 
+A preparação relacional usa um mapeamento explícito de colunas, preserva produtos por estabelecimento e rejeita pedidos inconsistentes ou referências ausentes. O benchmark compara popularidade, repetição e similaridade colaborativa, com Recall@K, NDCG@K e análise de clientes novos. Consulte [comandos, contratos e limites](docs/DATA_PIPELINE.md) antes de configurar uma base real. Relatórios e bancos existentes não são sobrescritos.
+
 ## Estrutura
 
 ```text
 apps/api/           API de produto (planejada)
 apps/web/           interface React/TypeScript (planejada)
-src/meal_discovery/ código Python e auditor inicial
+src/meal_discovery/ auditoria, importação, recomendação e avaliação
+configs/           exemplo de mapeamento explícito de CSVs
 data/              obtenção e armazenamento local, ignorado no Git
 models/            documentação de artefatos futuros
 evaluations/       protocolo e exemplos de casos de desenvolvimento
@@ -54,9 +60,11 @@ tests/             verificações de integridade do auditor
 - [Experiência e direção visual](docs/DESIGN.md)
 - [Protocolo de avaliação](evaluations/README.md)
 - [Dados, procedência e limitações](data/README.md)
+- [Pipeline e benchmark executáveis](docs/DATA_PIPELINE.md)
+- [Explicação da implementação para estudo](docs/LEARNING.md)
 - [Registro de decisões](docs/DECISIONS.md)
 
-As funcionalidades serão marcadas como entregues apenas com execução e evidência. A publicação inicial é uma base de desenvolvimento, não uma demonstração completa.
+As funcionalidades serão marcadas como entregues apenas com execução e evidência. Este repositório está em desenvolvimento; dados reais, LLM e produto visual permanecem como próximos marcos.
 
 ## Fontes
 

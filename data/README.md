@@ -6,4 +6,4 @@ O artigo descreve pedidos, produtos e vendedores de três cidades. Há preços n
 
 Diretórios locais futuros: `raw/`, `interim/`, `processed/`. Todos ignorados pelo Git. Não publicar dados corporativos, currículo ou transcrições privadas.
 
-Ao obter a base: registrar data, URL, versão, hashes, licença, esquema real, contagens por cidade e split. Conferir duplicatas, unidades, relações de tabelas, cobertura temporal, IDs órfãos e cardinalidade. O auditor inicial inventaria apenas CSVs; não implementa essas validações específicas ainda.
+Ao obter a base: registrar data, URL, versão, hashes, licença, esquema real, contagens por cidade e split. Conferir duplicatas, unidades, relações de tabelas, cobertura temporal, IDs órfãos e cardinalidade. O comando `prepare` já valida um contrato relacional explícito em CSV e cria SQLite; esse contrato ainda não foi testado com os arquivos DHRD. Ver [pipeline](../docs/DATA_PIPELINE.md) e [acesso](../docs/DATA_ACCESS.md).

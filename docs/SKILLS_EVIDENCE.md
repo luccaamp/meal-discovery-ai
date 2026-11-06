@@ -4,8 +4,8 @@ Fonte: [vaga oficial](https://job-boards.greenhouse.io/ifoodcarreiras/jobs/89010
 
 | Competência ou ferramenta | Aplicação proposta | Evidência exigida | Status |
 | --- | --- | --- | --- |
-| GitHub e software | Código organizado, commits, CI e reprodução | Execuções e documentação | Estrutura inicial |
-| ML | Recomendador e comparação com referências | Resultados reservados e análise de erros | Planejado |
+| GitHub e software | Código organizado, commits, CI e reprodução | Execuções e documentação | Pipeline e testes implementados |
+| ML | Recomendador e comparação com referências | Resultados reservados e análise de erros | Três referências implementadas; avaliação apenas sintética |
 | Hugging Face | Artefato treinado ou adaptado e model card, se suportado | Link e instrução de inferência verificada | Planejado e condicionado |
 | Pesquisa/artigo | Experimento controlado de ranking e agente | Relatório com método e limitações | Planejado |
 | Kaggle | Competição relacionada separada, se escolhida e realizada | Submissão real identificável | Fora do escopo inicial |
