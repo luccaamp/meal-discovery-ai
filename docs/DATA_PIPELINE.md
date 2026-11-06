@@ -7,8 +7,17 @@
 3. `benchmark`: compara popularidade, repetição histórica e similaridade colaborativa de itens.
 4. `scripts/fetch_hyperhawkes.py`: baixa a cópia pública real pré-processada do DHRD e verifica o hash.
 5. `scripts/fetch_nearbite_sg.py` e `scripts/audit_nearbite_sg.py`: obtêm e auditam as três tabelas reais do espelho público de Singapura.
+6. `prepare-singapore`: adapta a versão real fixada por SHA-256, exclui pedidos inteiros com produtos ausentes e preserva contexto.
+7. `validate-singapore`: executa a configuração temporal registrada, sem avaliar os dias de teste reservado.
 
-Nenhum resultado de recomendação em DHRD foi medido. O derivado de Estocolmo e três tabelas reais de Singapura estão disponíveis localmente. A auditoria de Singapura já examinou todas as tabelas e relações; a preparação para treino ainda precisa tratar o índice de exportação, dias textuais e 41 linhas com produto ausente no catálogo. O importador genérico abaixo ainda não incorpora essas transformações e não deve ser usado diretamente com os arquivos sem um adaptador explícito.
+A primeira validação de recomendação em dados reais foi concluída: [Experimento 001](EXPERIMENT_001.md). A preparação específica de Singapura mantém os dados brutos intactos e trata explicitamente índice de exportação, dia textual e quarentena. O comando genérico `prepare` abaixo continua disponível para outros contratos; para esta cópia, usar `prepare-singapore`.
+
+```sh
+python -m meal_discovery prepare-singapore --output data/processed/singapore-v1.sqlite
+python -m meal_discovery validate-singapore --database data/processed/singapore-v1.sqlite --output reports/singapore-validation-v1.json
+```
+
+Saídas existentes não são substituídas. O protocolo em `configs/singapore-experiment-v1.json` fixa treino 0–61, validação 62–68 e teste reservado 69–75. A execução real avaliou todos os 109.842 clientes da validação. Os 35 pedidos com produto ausente foram excluídos inteiros, e as cestas modelam presença de item, consolidando 84.974 repetições. A versão preserva `vendor_context`, `order_context` e `quarantined_orders` no banco local. A quarentena não aparece como pedido válido.
 
 ## Obter dados reais agora
 
@@ -49,7 +58,7 @@ SQLite foi escolhido nesta etapa pelo suporte transacional e ausência de depend
 
 ## Como avaliar sem usar o futuro
 
-O comando exige `--train-end-day` e `--eval-end-day`; os cortes devem ser escolhidos após a auditoria, nunca copiados dos exemplos sintéticos. Treino usa todos os pedidos até o primeiro limite, inclusive; avaliação usa o período seguinte até o segundo limite, inclusive.
+O comando genérico `benchmark` exige `--train-end-day` e `--eval-end-day`; o comando específico `validate-singapore` lê os cortes da configuração versionada. Treino usa todos os pedidos até o primeiro limite, inclusive; avaliação usa o período seguinte até o segundo limite, inclusive. Cortes não devem ser escolhidos a partir do teste ou copiados de fixtures.
 
 Para cada cliente, o alvo é sua primeira cesta no período de avaliação. O treino fica congelado: outras compras posteriores não atualizam o perfil. Empates são resolvidos por dia, horário e ID do pedido. Não há atualização progressiva neste protocolo inicial.
 
@@ -57,13 +66,13 @@ Referências:
 
 - **Popularidade:** quantidade de cestas de treino contendo o item.
 - **Repetição:** frequência do item nas cestas de treino do cliente, completada com popularidade.
-- **Similaridade de itens:** cosseno entre conjuntos de compradores históricos, com redução de confiança para poucos compradores em comum. Somar similaridades aos vinte itens mais frequentes do perfil; completar com popularidade. Itens repetidos são permitidos.
+- **Similaridade por cesta (`basket_cosine`):** cosseno entre presenças de itens em pedidos históricos, com redução de confiança para poucas co-compras. Somar pesos dos vizinhos a partir de até vinte itens frequentes do perfil; completar com popularidade. Recompras são permitidas.
 
 Cada ranking tem IDs únicos e desempate determinístico. Métricas são médias por cliente: Recall@K, NDCG@K e Hit Rate@K. A relevância é binária por item; NDCG usa ganho 1/log2(posição+1). Há segmentos de clientes conhecidos/novos, cobertura do catálogo e latências p50/p95.
 
 O catálogo candidato contém somente itens comprados no treino. Itens-alvo novos permanecem no denominador e contam como falhas. O relatório informa essa cobertura. Não há negativos amostrados nem filtro geográfico ainda; o experimento mede afinidade em catálogo histórico de uma cidade, sem comprovar disponibilidade ou possibilidade de entrega.
 
-`--max-users` limita aos primeiros clientes por ordem cronológica e serve para testar execução/tempo. Esse recorte não é amostra representativa, nem resultado final de portfólio. A versão inicial calcula similaridade sob demanda e ordena o catálogo; escala ainda precisa de medição e otimização.
+`--max-users` limita aos primeiros clientes por ordem cronológica e serve para testar execução/tempo. Esse recorte não é amostra representativa, nem resultado final de portfólio. A execução real não usou esse limite. O candidato padrão agora é `basket_cosine`: co-presença de itens em pedidos, até 100 vizinhos por semente, até 20 sementes por perfil, cosseno com redução de confiança e cache local. O `item_cosine` original por compradores em comum permanece no código e não participou do Experimento 001. O relatório e o artigo do experimento registram a definição exata.
 
 `--split validation` e `--split test` são rótulos no relatório. O programa não impede repetir consultas ao teste. Manter o teste reservado exige disciplina e registro das decisões. Resultados dos splits distribuídos pelos autores só serão comparados depois de entender seu protocolo.
 

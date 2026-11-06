@@ -1,6 +1,6 @@
 # Protocolo de avaliação
 
-Status: o protocolo inicial de primeira cesta futura está implementado e verificado com exemplos sintéticos; não há resultados DHRD. Consulte [comandos e definições exatas](../docs/DATA_PIPELINE.md). A avaliação de LLM e a busca permanecem planejadas.
+Status: primeira validação real concluída sobre o espelho DHRD de Singapura, com 109.842 clientes. [Experimento 001](../docs/EXPERIMENT_001.md) e [relatórios agregados](results/README.md). Treino 0–61, validação 62–68, teste 69–75 reservado. Consulte [comandos e definições exatas](../docs/DATA_PIPELINE.md). A avaliação de LLM e a busca permanecem planejadas.
 
 ## Recomendação e recuperação
 

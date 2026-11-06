@@ -1,8 +1,8 @@
 # Arquitetura proposta
 
-Implementados: auditor CSV, mapeamento explícito, importação relacional em SQLite e benchmark de três recomendadores. A cópia real derivada do DHRD foi baixada e auditada; falta adaptar seu formato para treinamento. Fixtures sintéticas existem somente em testes. API, índices de busca, agente, frontend e n8n permanecem planejados.
+Implementados: auditor CSV, preparação específica da cópia real de Singapura em SQLite, contratos de contexto/quarentena e validação temporal de três recomendadores. A primeira execução real usou todos os 109.842 usuários de validação. Fixtures sintéticas existem somente em testes. API, índices de busca, agente, frontend e n8n permanecem planejados.
 
-Fluxo executável atual: CSVs com mapeamento explícito → contratos e hashes → SQLite somente leitura para análise → perfis de treino congelados → popularidade/repetição/cosseno → relatório de avaliação. SQLite foi escolhido para integridade e transações sem dependência de execução adicional; a arquitetura abaixo permanece a visão de evolução.
+Fluxo executável atual: CSVs reais fixados por SHA-256 → normalização e quarentena por pedido → SQLite somente leitura para análise → perfis de treino congelados → popularidade/repetição/cosseno por cesta → relatório de validação. Contextos preservam geohash, rede e dia da semana para próximas etapas; ainda não são filtros de candidatos. SQLite foi escolhido para integridade e transações sem dependência de execução adicional; a arquitetura abaixo permanece a visão de evolução.
 
 ```mermaid
 flowchart LR

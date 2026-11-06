@@ -2,7 +2,15 @@
 
 Recomendação de refeições e busca conversacional com dados reais da Delivery Hero.
 
-**Status: três tabelas reais de Singapura baixadas e auditadas.** Uma cópia pública de terceiros disponibiliza 1.709.414 pedidos de treino, 1.066.840 produtos, 7.411 estabelecimentos e 78 categorias de culinária, com preço normalizado e geohash. Já temos também o derivado de Estocolmo do HyperHawkes. A distribuição original completa e o teste oficial continuam pendentes; não há modelo treinado ou interface publicada nesta versão.
+**Status: preparação e primeira validação com dados reais concluídas.** O espelho público de Singapura gerou 1.709.379 pedidos válidos. Três referências foram ajustadas no histórico e avaliadas nos mesmos 109.842 usuários de validação. A distribuição original completa continua pendente; os dias reservados para nosso teste ainda não foram avaliados. Interface e LLM permanecem planejados.
+
+| Referência | Recall@10 | NDCG@10 |
+| --- | ---: | ---: |
+| Popularidade global | 0,2504% | 0,001166 |
+| Repetição pessoal | **16,0427%** | **0,127100** |
+| Similaridade por cesta | 6,7272% | 0,042941 |
+
+Métricas offline sobre a primeira cesta futura de cada cliente. Sem filtro geográfico e sem comprovação de impacto comercial. [Experimento, protocolo e limitações](docs/EXPERIMENT_001.md).
 
 ## Produto proposto
 
@@ -23,11 +31,15 @@ python -m unittest discover -s tests -v
 python scripts/fetch_hyperhawkes.py
 python scripts/fetch_nearbite_sg.py
 python scripts/audit_nearbite_sg.py
+python -m meal_discovery prepare-singapore --output data/processed/singapore-v1.sqlite
+python -m meal_discovery validate-singapore --database data/processed/singapore-v1.sqlite --output reports/singapore-validation-v1.json
 ```
 
 O primeiro downloader fixa revisão e hash Git do derivado HyperHawkes. O segundo obtém as três tabelas públicas de Singapura (419.360.922 bytes), confere tamanho/cabeçalho e registra SHA-256. Os arquivos ficam em `data/raw/`, ignorado pelo Git. O auditor examina todas as linhas e relações, sem publicar registros individuais. Escolha outro `--output` para repetir uma auditoria já salva.
 
-A cópia de Singapura tem pedidos dos dias relativos 0–75 e inclui preço normalizado, categoria de culinária e geohash; coordenadas adicionais foram derivadas do geohash pelo autor do espelho. O auditor encontrou 41 linhas de itens sem correspondência no catálogo, ainda sem tratamento para treino. Não afirmar equivalência byte a byte ao pacote original nem inventar dados faltantes. Ver [procedência e limites](docs/DATA_ACCESS.md) e [busca pela distribuição completa](docs/SOURCE_SEARCH_2026-11-06.md).
+A cópia de Singapura tem pedidos dos dias relativos 0–75 e inclui preço normalizado, categoria de culinária e geohash; coordenadas adicionais foram derivadas do geohash pelo autor do espelho. As 41 linhas de itens sem cadastro levaram à quarentena dos 35 pedidos afetados por inteiro. Fontes brutas permanecem intactas. Não afirmar equivalência byte a byte ao pacote original. Ver [procedência e limites](docs/DATA_ACCESS.md) e [busca pela distribuição completa](docs/SOURCE_SEARCH_2026-11-06.md).
+
+O protocolo versionado usa treino nos dias 0–61, validação nos dias 62–68 e reserva 69–75 para teste. Os comandos protegem saídas existentes; para repetir, escolha novos nomes de banco e relatório.
 
 **Política de dados reais:** comandos públicos de preparação e benchmark rejeitam fontes marcadas como sintéticas. O comando `demo` foi removido. Pequenas fixtures inventadas ficam exclusivamente em `tests/`; não há fallback sintético no produto.
 
@@ -59,6 +71,7 @@ tests/             verificações de integridade do auditor
 ## Documentação
 
 - [Plano e marcos](docs/PROJECT_PLAN.md)
+- [Primeiro experimento real e análise de erros](docs/EXPERIMENT_001.md)
 - [Ferramentas e evidências para o portfólio](docs/SKILLS_EVIDENCE.md)
 - [Arquitetura e decisões](docs/ARCHITECTURE.md)
 - [Experiência e direção visual](docs/DESIGN.md)
@@ -68,7 +81,7 @@ tests/             verificações de integridade do auditor
 - [Explicação da implementação para estudo](docs/LEARNING.md)
 - [Registro de decisões](docs/DECISIONS.md)
 
-As funcionalidades serão marcadas como entregues apenas com execução e evidência. Este repositório está em desenvolvimento; adaptação da cópia real, LLM e produto visual permanecem como próximos marcos.
+As funcionalidades serão marcadas como entregues apenas com execução e evidência. Este repositório está em desenvolvimento; busca, API, LLM e produto visual permanecem como próximos marcos.
 
 ## Fontes
 

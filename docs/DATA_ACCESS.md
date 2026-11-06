@@ -26,7 +26,7 @@ Arquivos locais em `data/raw/nearbite-sg/`; total de 419.360.922 bytes. O manife
 
 Campos de catálogo: vendedor, produto, nome e preço normalizado. Estabelecimentos: vendedor, rede, geohash e culinária. Pedidos: cliente, geohash, pedido, vendedor, produto, dia da semana, horário e dia relativo. Colunas de índice de exportação são preservadas nos arquivos originais locais e devem ser ignoradas explicitamente na preparação.
 
-Integridade observada: zero chaves duplicadas de vendedor/produto; zero referências a vendedores inexistentes; zero pedidos com cliente/dia/horário conflitantes; zero preços inválidos ou negativos. **41 linhas de compra apontam para produtos ausentes no catálogo.** Ainda precisamos decidir e documentar o tratamento dessas linhas, sem inventar metadados. O auditor usa banco temporário local para verificar todas as relações e o remove ao concluir.
+Integridade observada: zero chaves duplicadas de vendedor/produto; zero referências a vendedores inexistentes; zero pedidos com cliente/dia/horário conflitantes; zero preços inválidos ou negativos. **41 linhas de compra apontam para produtos ausentes no catálogo.** A preparação `singapore-v1` colocou em quarentena os 35 pedidos afetados por inteiro (77 linhas). Também consolidou 84.974 linhas repetidas por item/pedido para a tarefa binária de cesta. [Relatório de preparação e primeira validação](EXPERIMENT_001.md). O auditor usa banco temporário local para verificar todas as relações e o remove ao concluir.
 
 Hashes SHA-256:
 
@@ -34,7 +34,7 @@ Hashes SHA-256:
 - `products_sg.csv`: `63e981a45619a3a7e62af8a037ffb641e7410fee35e26b4882f9db6de5e1385c`.
 - `orders_sg_train_clean.csv`: `4d3ceb436c2f66872663357df223fb45b7cff9753c60ca70cd180f62d7acf1c6`.
 
-Não há teste oficial separado nessa cópia, nem arquivos completos das outras duas cidades. As contagens coincidem com a documentação do espelho. Preço não é valor em reais; geohash/coordenadas decodificadas não são localização exata ou confirmação de raio de entrega. O adaptador de treino ainda precisa lidar com cabeçalho de índice vazio e dias no formato textual de timedelta; não alterar os arquivos baixados para esconder essas diferenças.
+Não há teste oficial separado nessa cópia, nem arquivos completos das outras duas cidades. As contagens coincidem com a documentação do espelho. Preço não é valor em reais; geohash/coordenadas decodificadas não são localização exata ou confirmação de raio de entrega. O adaptador de treino já trata o índice de exportação e dias textuais explicitamente; os arquivos baixados não foram alterados.
 
 ## Distribuição acadêmica disponível
 

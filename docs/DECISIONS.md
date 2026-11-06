@@ -40,3 +40,14 @@ Template dos próximos registros: hipótese → alteração → comparação →
 - Comparação de fontes: esta cópia tem preço normalizado, culinária e geohash ausentes no derivado de Estocolmo. Priorizar Singapura para o produto, mantendo as fontes separadas e seus limites explícitos.
 - Limite: não foram obtidos os três ZIPs originais nem o teste separado. O carregador OmniRec revelou links e hashes de referência; os downloads continuaram exigindo acesso. Busca em catálogos públicos não encontrou o pacote integral.
 - Próxima ação: implementar adaptação do formato real e tratamento registrado das 41 linhas, depois reservar avaliação temporal própria. Não declarar a aquisição de todos os dados.
+
+## 2026-11-06 — Preparação e primeira validação real
+
+- Protocolo registrado antes de medir: treino 0–61, validação 62–68, teste 69–75 reservado. Mesma primeira cesta futura e catálogo de treino para os três modelos; nenhum limite de usuários.
+- Preparação: fontes reais verificadas por hashes fixados, índice e dias textuais tratados, contexto preservado. Quarentena de 35 pedidos inteiros (77 linhas) por 41 linhas sem produto; 84.974 repetições item/pedido consolidadas. Restaram 1.709.379 pedidos e 3.346.819 presenças binárias de item.
+- Implementação: candidato `basket_cosine` com co-compra por pedido e top-100 vizinhos, distinto do `item_cosine` legado por compradores em comum. Parâmetros definidos antes da primeira validação. Uso de chaves canônicas e treinamento compartilhado permitiu executar o recorte completo localmente.
+- Resultado: 109.842 clientes na validação. Recall@10: popularidade 0,2504%, repetição 16,0427%, cosseno por cesta 6,7272%. O candidato mais elaborado perdeu para repetição nesta execução; manter repetição como referência forte.
+- Erro prioritário: 21.480 clientes sem histórico recebem popularidade global; 6.278 itens-alvo não estavam no treino. Investigar recuperação por conteúdo e preferências explícitas, sem afirmar ganho antes de avaliar.
+- Limites: validação histórica própria, espelho de terceiros, sem restrição geográfica ou teste final. Não demonstra conversão, satisfação ou ganho financeiro.
+- Evidências: `EXPERIMENT_001.md`, configuração congelada e relatórios agregados em `evaluations/results/`. Dados e IDs de quarentena ficam locais.
+- Assistência: Codex implementou e executou o pipeline; a revisão e a compreensão pelo candidato continuam parte do trabalho de preparação para entrevista.

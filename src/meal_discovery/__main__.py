@@ -5,10 +5,12 @@ import csv
 import json
 from pathlib import Path
 import sqlite3
+import sys
 
 from .audit import audit_directory
-from .benchmark import benchmark
+from .benchmark import benchmark, validate_singapore
 from .dataset import prepare_dataset
+from .singapore import prepare_singapore
 
 
 def write_report(path: Path, result: dict):
@@ -30,6 +32,13 @@ def main() -> int:
     prepare = commands.add_parser("prepare", help="Validate explicit CSV mappings and create a SQLite dataset")
     prepare.add_argument("--config", type=Path, required=True)
     prepare.add_argument("--output", type=Path, required=True)
+    singapore = commands.add_parser("prepare-singapore", help="Prepare the pinned real Singapore mirror, quarantining whole invalid orders")
+    singapore.add_argument("--input-dir", type=Path, default=Path("data/raw/nearbite-sg"))
+    singapore.add_argument("--output", type=Path, required=True)
+    validate = commands.add_parser("validate-singapore", help="Run the frozen validation protocol without evaluating reserved test days")
+    validate.add_argument("--database", type=Path, required=True)
+    validate.add_argument("--protocol", type=Path, default=Path("configs/singapore-experiment-v1.json"))
+    validate.add_argument("--output", type=Path, required=True)
     evaluate = commands.add_parser("benchmark", help="Evaluate fixed-origin next-basket recommendation")
     evaluate.add_argument("--database", type=Path, required=True)
     evaluate.add_argument("--train-end-day", type=int, required=True)
@@ -49,6 +58,15 @@ def main() -> int:
         elif args.command == "prepare":
             result = prepare_dataset(args.config, args.output)
             print(f"Dataset ({result['data_kind']}): {args.output}. Counts: {result['counts']}")
+        elif args.command == "prepare-singapore":
+            result = prepare_singapore(args.input_dir, args.output, progress=lambda message: print(message, file=sys.stderr, flush=True))
+            print(f"Prepared real Singapore dataset: {args.output}. Counts: {result['counts']}. Quarantine: {result['quarantine']}")
+        elif args.command == "validate-singapore":
+            if args.output.exists() or args.output.suffix != ".json":
+                raise ValueError("Choose a new .json validation report path")
+            result = validate_singapore(args.database, args.protocol, progress=lambda message: print(message, file=sys.stderr, flush=True))
+            write_report(args.output, result)
+            print(f"Real-data validation report: {args.output}. Reserved test was not evaluated.")
         elif args.command == "benchmark":
             if args.output.exists() or args.output.suffix.lower() != ".json":
                 raise ValueError("Choose a new .json report path")
