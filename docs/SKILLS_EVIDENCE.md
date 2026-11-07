@@ -6,8 +6,8 @@ Fonte: [vaga oficial](https://job-boards.greenhouse.io/ifoodcarreiras/jobs/89010
 | --- | --- | --- | --- |
 | GitHub e software | Código organizado, commits, CI e reprodução | Execuções e documentação | Pipeline e testes implementados |
 | ML | Recomendador e comparação com referências | Resultados reservados e análise de erros | Validação real de três referências e análise de perfis novos/conhecidos; teste reservado |
-| Hugging Face | Artefato treinado ou adaptado e model card, se suportado | Link e instrução de inferência verificada | Planejado e condicionado |
-| Pesquisa/artigo | Experimento controlado de ranking e agente | Relatório com método e limitações | Primeiro relatório de recomendação entregue; estudo do agente planejado |
+| Hugging Face | Modelos abertos, procedência e inferência; artefato próprio se justificado | Revisão, hashes, execução e limitações | E5 pré-treinado obtido e executado localmente via ONNX, com revisão e SHA fixados; nenhum treinamento/fine-tuning ou artefato próprio publicado |
+| Pesquisa/artigo | Experimento controlado de ranking e agente | Relatório com método e limitações | Relatórios de recomendação e piloto de recuperação publicados, incluindo resultados negativos e limites dos rótulos; agente planejado |
 | Kaggle | Competição relacionada separada, se escolhida e realizada | Submissão real identificável | Fora do escopo inicial |
 | Prompts avançados | Contratos, saídas estruturadas, esclarecimento e versões | Comparação com prompt simples em casos reservados | Planejado |
 | GPT/Claude/Gemini | Comparar dois modelos acessíveis com mesmas ferramentas | Modelo, versão, custo, latência e casos de erro | Planejado |

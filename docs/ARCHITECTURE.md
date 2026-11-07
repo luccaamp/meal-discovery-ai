@@ -1,6 +1,6 @@
 # Arquitetura e evolução
 
-Implementados: auditoria oficial, preparação de Singapura em SQLite, contratos de contexto/quarentena, validação temporal de três recomendadores, índice FTS5/BM25 e API FastAPI. A validação interna oficial usou 175.358 clientes. Fixtures sintéticas existem somente em testes. Embeddings, agente, frontend e n8n permanecem planejados.
+Implementados: auditoria oficial, preparação de Singapura em SQLite, contexto/quarentena, validação de três recomendadores, FTS5/BM25 e API FastAPI. A validação interna oficial usou 175.358 clientes. Há também embeddings E5 via ONNX e busca híbrida RRF em piloto de 10.000 produtos, separados da API lexical completa. Fixtures sintéticas existem somente em testes. Agente, frontend e n8n permanecem planejados.
 
 Origem: a distribuição oficial completa foi recebida, verificada e auditada em 7/11/2026. `official-source-selection-v1.json` registra os papéis dos quinze arquivos. O novo adaptador lê os originais com teste oficial fisicamente separado. O adaptador histórico continua disponível para reproduzir o Experimento 001. [Migração](OFFICIAL_DATA_MIGRATION.md) e [Experimento 002](EXPERIMENT_002.md).
 

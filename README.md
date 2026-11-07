@@ -2,7 +2,7 @@
 
 Recomendação de refeições e busca conversacional com dados reais da Delivery Hero.
 
-**Status: pipeline oficial, validação temporal, busca textual e API executados.** O catálogo pesquisável contém 1.066.840 produtos reais de Singapura. A validação interna compara três recomendadores em 175.358 clientes. Nenhuma métrica foi calculada nos testes oficiais. Interface e LLM permanecem planejados. [Experimento oficial](docs/EXPERIMENT_002.md) · [Executar a API](apps/api/README.md).
+**Status: pipeline oficial, recomendação avaliada, busca lexical completa e API executados.** O catálogo pesquisável contém 1.066.840 produtos reais de Singapura. Há também um piloto semântico/híbrido em 10.000 produtos, ainda experimental por limitações de qualidade. A validação de recomendação compara três modelos em 175.358 clientes. Nenhuma métrica foi calculada nos pedidos de teste oficial. Interface e LLM permanecem planejados. [Estado e visão final](docs/PROJECT_STATUS.md) · [Executar a API](apps/api/README.md) · [Experimento semântico](docs/EXPERIMENT_003.md).
 
 [Quais arquivos usar, comparação e plano de migração](docs/OFFICIAL_DATA_MIGRATION.md).
 
@@ -97,7 +97,7 @@ tests/             verificações de integridade do auditor
 - [Explicação da implementação para estudo](docs/LEARNING.md)
 - [Registro de decisões](docs/DECISIONS.md)
 
-As funcionalidades serão marcadas como entregues apenas com execução e evidência. A API serve busca textual BM25, filtros, detalhes e procedência sobre dados reais, com validação por HTTP. Busca semântica, LLM e produto visual permanecem como próximos marcos.
+As funcionalidades serão marcadas como entregues apenas com execução e evidência. A API serve BM25, filtros, detalhes e procedência sobre o catálogo real completo. A recuperação semântica existe como piloto via CLI, com corpus e qualidade limitados; não substitui a API. Julgamentos humanos, LLM e produto visual permanecem pendentes.
 
 ## Fontes
 
