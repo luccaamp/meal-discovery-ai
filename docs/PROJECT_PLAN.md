@@ -8,7 +8,7 @@ O plano de Olist foi substituído por recomendação de refeições com DHRD. O 
 
 ## Recorte inicial
 
-Uma cidade, descoberta de refeições e personalização histórica. Escolher a cidade após acesso e auditoria; Stockholm é candidata pelo menor volume descrito no artigo, não uma decisão baseada em dados já baixados. Não adicionar demanda ao primeiro escopo.
+Uma cidade, descoberta de refeições e personalização histórica. Após acesso e auditoria, Singapura foi escolhida como principal; Estocolmo fica como cidade secundária e Taipei como extensão. Não adicionar demanda ao primeiro escopo.
 
 Tarefas: explorar catálogo, refinar preferências suportadas pelos atributos, receber recomendações, compreender a evidência e comparar alternativas. Interface em português com preservação do nome original dos itens e indicação de que o catálogo é histórico.
 
@@ -29,7 +29,11 @@ Planejamento indicativo: M0–M2 em 15–20h; M3–M4 em 15–20h; M5 em 12–18
 
 ## Hipóteses de produto
 
-### Estado da implementação em 6/11/2026
+### Estado da implementação em 7/11/2026
+
+Estado atual: migração para os arquivos oficiais concluída. Validação interna v2 em 175.358 clientes, com teste oficial separado. Busca lexical BM25 executada em 1.066.840 produtos, com filtros de culinária e preço normalizado e verificações em consultas reais. M3 está parcialmente entregue: faltam julgamentos de relevância, embeddings e comparação híbrida. API, agente e interface permanecem pendentes. [Experimento 002](EXPERIMENT_002.md).
+
+Registro histórico das etapas anteriores:
 
 M0 entregue. M1 concluído para o espelho real de Singapura: preparação reproduzível, 35 pedidos em quarentena por produto ausente, 1.709.379 pedidos válidos e fontes preservadas por hash. M2 tem a primeira validação real concluída: 109.842 clientes, três referências e análise de perfis sem histórico. Teste temporal próprio dos dias 69–75 permanece reservado. [Experimento 001](EXPERIMENT_001.md).
 

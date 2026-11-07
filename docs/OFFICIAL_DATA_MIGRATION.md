@@ -2,6 +2,8 @@
 
 Verificação concluída em 7/11/2026.
 
+Atualização de implementação: a migração já foi executada pelo novo comando `prepare-official-singapore`, com banco independente, teste oficial separado e protocolo v2 registrado antes da validação. A busca lexical também foi executada no catálogo completo. [Experimento 002, resultados e comandos](EXPERIMENT_002.md). As propostas de migração abaixo registram o contexto original da decisão.
+
 O usuário forneceu `data_sg.zip`, `data_se.zip`, `data_tw.zip` e [o README da distribuição](../readme_data_zip.md). Os três arquivos correspondem aos SHA-256 publicados pelo carregador OmniRec, e todos os membros extraídos tiveram CRC e tamanho verificados.
 
 ## Resultado da auditoria integral

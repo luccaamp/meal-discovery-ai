@@ -8,7 +8,7 @@ import unittest
 from meal_discovery.dataset import open_dataset
 from meal_discovery.benchmark import validate_singapore
 from meal_discovery.recommendation import Recommender
-from meal_discovery.singapore import parse_day, prepare_singapore
+from meal_discovery.singapore import parse_day, prepare_official_singapore, prepare_singapore
 from scripts.fetch_nearbite_sg import FILES
 
 
@@ -38,6 +38,36 @@ def source_fixture(root):
 
 
 class SingaporePreparationTests(unittest.TestCase):
+    def test_official_preparation_does_not_open_or_import_the_test_file(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            source_fixture(root / "mirror")
+            city = root / "official/data_sg"
+            city.mkdir(parents=True)
+            names = {"vendors_sg_clean.csv": "vendors_sg.txt", "products_sg.csv": "products_sg.txt",
+                     "orders_sg_train_clean.csv": "orders_sg_train.txt"}
+            files = []
+            for source, target in names.items():
+                (city / target).write_bytes((root / "mirror" / source).read_bytes())
+                files.append({"path": "data_sg/" + target, "sha256": hashlib.sha256((city / target).read_bytes()).hexdigest()})
+            files.append({"path": "data_sg/orders_sg_test.txt", "sha256": "unopened-test-reference"})
+            manifest = {"data_kind": "synthetic", "archives": [{"city_code": "sg", "files": files}]}
+            (root / "official/official-manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+            result = prepare_official_singapore(root / "official", root / "prepared.sqlite", allow_test_data=True)
+            self.assertEqual(result["adapter_version"], "singapore-official-v1")
+            self.assertFalse(result["official_test_reference"]["loaded_into_training_database"])
+            self.assertFalse((city / "orders_sg_test.txt").exists())
+            self.assertEqual(result["source_counts"]["orders"], 3)
+            protocol = {"protocol_version": "singapore-official-validation-v2", "dataset_adapter": "singapore-official-v1",
+                        "train_end_day_inclusive": 0, "validation_end_day_inclusive": 1,
+                        "test_start_day_inclusive": 76, "test_end_day_inclusive": 90,
+                        "k": 1, "models": ["popularity"], "max_users": None, "geographic_filter": False}
+            path = root / "protocol.json"
+            path.write_text(json.dumps(protocol), encoding="utf-8")
+            validation = validate_singapore(root / "prepared.sqlite", path, allow_test_data=True)
+            self.assertTrue(validation["reserved_test"]["stored_separately"])
+            self.assertFalse(validation["reserved_test"]["evaluated"])
+
     def test_quarantines_whole_order_keeps_context_and_deduplicates_items(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)

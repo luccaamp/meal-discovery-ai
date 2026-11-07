@@ -9,8 +9,9 @@ import sys
 
 from .audit import audit_directory
 from .benchmark import benchmark, validate_singapore
+from .catalog import build_catalog, search_catalog
 from .dataset import prepare_dataset
-from .singapore import prepare_singapore
+from .singapore import prepare_official_singapore, prepare_singapore
 
 
 def write_report(path: Path, result: dict):
@@ -35,6 +36,9 @@ def main() -> int:
     singapore = commands.add_parser("prepare-singapore", help="Prepare the pinned real Singapore mirror, quarantining whole invalid orders")
     singapore.add_argument("--input-dir", type=Path, default=Path("data/raw/nearbite-sg"))
     singapore.add_argument("--output", type=Path, required=True)
+    official = commands.add_parser("prepare-official-singapore", help="Prepare only official training orders and catalog; leave official test separate")
+    official.add_argument("--input-dir", type=Path, default=Path("data/raw/dhrd-official-v1"))
+    official.add_argument("--output", type=Path, required=True)
     validate = commands.add_parser("validate-singapore", help="Run the frozen validation protocol without evaluating reserved test days")
     validate.add_argument("--database", type=Path, required=True)
     validate.add_argument("--protocol", type=Path, default=Path("configs/singapore-experiment-v1.json"))
@@ -47,9 +51,26 @@ def main() -> int:
     evaluate.add_argument("--k", type=int, default=10)
     evaluate.add_argument("--max-users", type=int)
     evaluate.add_argument("--output", type=Path, required=True)
+    catalog = commands.add_parser("build-catalog", help="Index the official historical catalog for lexical search")
+    catalog.add_argument("--database", type=Path, required=True)
+    catalog.add_argument("--output", type=Path, required=True)
+    search = commands.add_parser("search-catalog", help="Search real products with normalized-price and cuisine filters")
+    search.add_argument("--index", type=Path, required=True)
+    search.add_argument("--query", required=True)
+    search.add_argument("--cuisine")
+    search.add_argument("--min-price", type=float)
+    search.add_argument("--max-price", type=float)
+    search.add_argument("--limit", type=int, default=10)
     args = parser.parse_args()
     try:
-        if args.command == "audit":
+        if args.command == "build-catalog":
+            result = build_catalog(args.database, args.output)
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+        elif args.command == "search-catalog":
+            result = search_catalog(args.index, args.query, cuisine=args.cuisine,
+                                    min_price=args.min_price, max_price=args.max_price, limit=args.limit)
+            print(json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False))
+        elif args.command == "audit":
             if args.output.resolve().is_relative_to(args.input_dir.resolve()):
                 raise ValueError("Store the report outside the source data directory")
             result = audit_directory(args.input_dir, encoding=args.encoding, delimiter=args.delimiter)
@@ -61,6 +82,9 @@ def main() -> int:
         elif args.command == "prepare-singapore":
             result = prepare_singapore(args.input_dir, args.output, progress=lambda message: print(message, file=sys.stderr, flush=True))
             print(f"Prepared real Singapore dataset: {args.output}. Counts: {result['counts']}. Quarantine: {result['quarantine']}")
+        elif args.command == "prepare-official-singapore":
+            result = prepare_official_singapore(args.input_dir, args.output, progress=lambda message: print(message, file=sys.stderr, flush=True))
+            print(f"Prepared official training dataset: {args.output}. Counts: {result['counts']}. Official test rows were not loaded.")
         elif args.command == "validate-singapore":
             if args.output.exists() or args.output.suffix != ".json":
                 raise ValueError("Choose a new .json validation report path")

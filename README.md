@@ -2,17 +2,17 @@
 
 Recomendação de refeições e busca conversacional com dados reais da Delivery Hero.
 
-**Status: distribuição oficial completa obtida e auditada.** Os três ZIPs contêm quinze arquivos de Singapura, Estocolmo e Taipei, somando 4.400.000 pedidos. Singapura será a fonte principal. Os campos usados no primeiro experimento coincidem linha a linha com os originais; seus resultados históricos permanecem identificados como execução sobre o espelho. Nenhuma métrica foi calculada nos testes oficiais. Interface e LLM permanecem planejados.
+**Status: pipeline oficial, validação temporal e busca textual executados.** O catálogo pesquisável contém 1.066.840 produtos reais de Singapura. A validação interna compara três recomendadores em 175.358 clientes. Nenhuma métrica foi calculada nos testes oficiais. API, interface e LLM permanecem planejados. [Experimento oficial e busca](docs/EXPERIMENT_002.md).
 
 [Quais arquivos usar, comparação e plano de migração](docs/OFFICIAL_DATA_MIGRATION.md).
 
 | Referência | Recall@10 | NDCG@10 |
 | --- | ---: | ---: |
-| Popularidade global | 0,2504% | 0,001166 |
-| Repetição pessoal | **16,0427%** | **0,127100** |
-| Similaridade por cesta | 6,7272% | 0,042941 |
+| Popularidade global | 0,2606% | 0,001243 |
+| Repetição pessoal | **14,4442%** | **0,115707** |
+| Similaridade por cesta | 6,2262% | 0,039786 |
 
-Métricas offline sobre a primeira cesta futura de cada cliente. Sem filtro geográfico e sem comprovação de impacto comercial. [Experimento, protocolo e limitações](docs/EXPERIMENT_001.md).
+Métricas offline sobre a primeira cesta futura de cada cliente: treino 0–61, validação 62–75. Sem filtro geográfico e sem comprovação de impacto comercial. [Protocolo e limitações](docs/EXPERIMENT_002.md). O [Experimento 001](docs/EXPERIMENT_001.md) preserva resultados históricos do espelho, com outra janela de validação.
 
 ## Produto proposto
 
@@ -97,7 +97,7 @@ tests/             verificações de integridade do auditor
 - [Explicação da implementação para estudo](docs/LEARNING.md)
 - [Registro de decisões](docs/DECISIONS.md)
 
-As funcionalidades serão marcadas como entregues apenas com execução e evidência. Este repositório está em desenvolvimento; busca, API, LLM e produto visual permanecem como próximos marcos.
+As funcionalidades serão marcadas como entregues apenas com execução e evidência. A busca atual usa correspondência textual BM25 e filtros sobre dados reais. API, busca semântica, LLM e produto visual permanecem como próximos marcos.
 
 ## Fontes
 

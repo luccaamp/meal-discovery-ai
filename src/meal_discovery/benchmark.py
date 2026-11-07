@@ -64,7 +64,7 @@ def benchmark(database: Path, *, train_end_day: int, eval_end_day: int,
     connection = open_dataset(database)
     try:
         manifest = json.loads(connection.execute("SELECT value FROM metadata WHERE key='manifest'").fetchone()[0])
-        if manifest.get("data_kind") not in {"dhrd", "real_preprocessed_derivative", "real_third_party_copy"} and not allow_test_data:
+        if manifest.get("data_kind") not in {"dhrd", "real_preprocessed_derivative", "real_third_party_copy", "official_dhrd"} and not allow_test_data:
             raise ValueError("Real data required. Synthetic fixtures are restricted to automated tests")
         started = perf_counter()
         emit(f"Fitting frozen history through relative day {train_end_day}")
@@ -146,16 +146,27 @@ def benchmark(database: Path, *, train_end_day: int, eval_end_day: int,
 def validate_singapore(database: Path, protocol: Path, *, allow_test_data=False, progress=None) -> dict:
     protocol_hash = file_hash(protocol)
     config = json.loads(protocol.read_text(encoding="utf-8"))
-    if config.get("protocol_version") != "singapore-next-basket-v1":
+    version = config.get("protocol_version")
+    if version not in {"singapore-next-basket-v1", "singapore-official-validation-v2"}:
         raise ValueError("Unsupported validation protocol")
     train, validation, test = (config[key] for key in ("train_end_day_inclusive", "validation_end_day_inclusive", "test_end_day_inclusive"))
-    if not 0 <= train < validation < test or config.get("geographic_filter") is not False:
+    test_start = config.get("test_start_day_inclusive", validation + 1)
+    if not 0 <= train < validation < test_start <= test or config.get("geographic_filter") is not False:
         raise ValueError("Invalid temporal cuts or unsupported geographical filtering")
     connection = open_dataset(database)
     try:
         manifest = json.loads(connection.execute("SELECT value FROM metadata WHERE key='manifest'").fetchone()[0])
-        if manifest.get("adapter_version") != config["dataset_adapter"] or manifest.get("relative_days", [0, -1])[1] < test:
+        coverage = manifest.get("relative_days", [0, -1])[1]
+        if manifest.get("adapter_version") != config["dataset_adapter"]:
             raise ValueError("Dataset adapter or temporal coverage differs from the frozen protocol")
+        if version == "singapore-next-basket-v1" and coverage < test:
+            raise ValueError("Dataset temporal coverage differs from the historical protocol")
+        if version == "singapore-official-validation-v2":
+            reference = manifest.get("official_test_reference", {})
+            if (coverage < validation or coverage >= test_start
+                    or reference.get("relative_days") != [test_start, test]
+                    or reference.get("loaded_into_training_database") is not False):
+                raise ValueError("Official test must be separate from the training database")
     finally:
         connection.close()
     result = benchmark(database, train_end_day=train, eval_end_day=validation, split="validation",
@@ -164,6 +175,6 @@ def validate_singapore(database: Path, protocol: Path, *, allow_test_data=False,
     if file_hash(protocol) != protocol_hash:
         raise ValueError("Protocol changed during the validation run")
     result["frozen_protocol_sha256"] = protocol_hash
-    result["reserved_test"] = {"start_day_inclusive": validation + 1, "end_day_inclusive": test,
-                               "evaluated": False}
+    result["reserved_test"] = {"start_day_inclusive": test_start, "end_day_inclusive": test,
+                               "evaluated": False, "stored_separately": version == "singapore-official-validation-v2"}
     return result
