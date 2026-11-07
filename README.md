@@ -2,7 +2,9 @@
 
 Recomendação de refeições e busca conversacional com dados reais da Delivery Hero.
 
-**Status: preparação e primeira validação com dados reais concluídas.** O espelho público de Singapura gerou 1.709.379 pedidos válidos. Três referências foram ajustadas no histórico e avaliadas nos mesmos 109.842 usuários de validação. A distribuição original completa continua pendente; os dias reservados para nosso teste ainda não foram avaliados. Interface e LLM permanecem planejados.
+**Status: distribuição oficial completa obtida e auditada.** Os três ZIPs contêm quinze arquivos de Singapura, Estocolmo e Taipei, somando 4.400.000 pedidos. Singapura será a fonte principal. Os campos usados no primeiro experimento coincidem linha a linha com os originais; seus resultados históricos permanecem identificados como execução sobre o espelho. Nenhuma métrica foi calculada nos testes oficiais. Interface e LLM permanecem planejados.
+
+[Quais arquivos usar, comparação e plano de migração](docs/OFFICIAL_DATA_MIGRATION.md).
 
 | Referência | Recall@10 | NDCG@10 |
 | --- | ---: | ---: |
@@ -28,6 +30,20 @@ python -m venv .venv
 python -m pip install -e .
 python -m meal_discovery --help
 python -m unittest discover -s tests -v
+```
+
+Com os ZIPs oficiais na raiz do projeto:
+
+```sh
+python scripts/verify_official_archives.py
+python scripts/audit_official_data.py
+```
+
+O primeiro comando confere os hashes e extrai os quinze CSVs `.txt` para `data/raw/dhrd-official-v1/`. O segundo audita os três splits e compara Singapura com a cópia histórica local. O relatório oficial já executado está versionado em `evaluations/results/`. Não usa o teste para medir ou ajustar modelos. [Fontes e papéis](configs/official-source-selection-v1.json).
+
+Para reproduzir a aquisição e o Experimento 001 históricos:
+
+```sh
 python scripts/fetch_hyperhawkes.py
 python scripts/fetch_nearbite_sg.py
 python scripts/audit_nearbite_sg.py

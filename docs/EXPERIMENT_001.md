@@ -1,5 +1,7 @@
 # Experimento 001 — primeira validação real de recomendação
 
+Nota de procedência adicionada em 7/11/2026: os arquivos oficiais foram recebidos. A comparação confirmou igualdade linha a linha dos campos originais de pedidos de treino, produtos e vendedores de Singapura com a cópia usada nesta execução. Resultados e hashes abaixo permanecem históricos, sem mudança de rótulo para execução oficial. [Verificação](OFFICIAL_DATA_MIGRATION.md).
+
 Executado em 6/11/2026. Resultado de validação offline, não de operação com usuários reais. Não há LLM neste experimento. O objetivo foi preparar os dados e estabelecer referências que os próximos modelos precisarão superar.
 
 ## Procedência e preparação

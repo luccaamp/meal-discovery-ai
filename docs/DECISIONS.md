@@ -51,3 +51,13 @@ Template dos próximos registros: hipótese → alteração → comparação →
 - Limites: validação histórica própria, espelho de terceiros, sem restrição geográfica ou teste final. Não demonstra conversão, satisfação ou ganho financeiro.
 - Evidências: `EXPERIMENT_001.md`, configuração congelada e relatórios agregados em `evaluations/results/`. Dados e IDs de quarentena ficam locais.
 - Assistência: Codex implementou e executou o pipeline; a revisão e a compreensão pelo candidato continuam parte do trabalho de preparação para entrevista.
+
+## 2026-11-07 — Distribuição oficial recebida, comparada e escolhida
+
+- Entrada: o usuário baixou os três ZIPs e o README original para o workspace.
+- Verificação: SHA-256 dos três pacotes coincide com a referência OmniRec; todos os membros passaram em CRC/tamanho; quinze arquivos extraídos com nomes permitidos e proteção de fontes existentes.
+- Auditoria: 4.400.000 pedidos nas três cidades, catálogos e vendedores completos, sem sobreposição de pedidos entre treino/teste. Fingerprints de linhas com multiplicidade confirmam que o arquivo completo contém a união dos splits.
+- Comparação SG: campos originais de treino, produtos e vendedores coincidem linha a linha com o espelho. Produtos também têm SHA-256 byte a byte idêntico. A divergência de colunas decorre do índice e de latitude/longitude adicionais, que não entraram no primeiro recomendador.
+- Observação: o teste SG inclui dias 76–90, enquanto SE/TW incluem 76–89. No catálogo SG há 41 referências ausentes no treino e oito no teste. Não cortar o dia 90 nem esconder casos ausentes.
+- Decisão: fonte principal passa a ser a distribuição oficial; usar SG primeiro, SE como base secundária e TW depois. Manter treino/teste separados e não anexar o arquivo completo como observações extras. Fontes antigas e Experimento 001 permanecem para reprodução, sem relabeling retroativo.
+- Próxima ação: migrar explicitamente o adaptador para os originais e definir protocolo com teste oficial separado antes do próximo experimento. A auditoria não executou previsão ou ajuste de modelo sobre os testes oficiais.

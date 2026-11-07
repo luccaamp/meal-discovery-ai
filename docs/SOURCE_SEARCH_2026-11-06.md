@@ -1,5 +1,7 @@
 # Busca pela distribuição completa DHRD
 
+**Atualização de 7/11/2026:** o usuário forneceu os três ZIPs oficiais e o README. Todos foram verificados por hash/CRC, extraídos e auditados; a distribuição completa está disponível localmente. [Fonte principal atual e comparação](OFFICIAL_DATA_MIGRATION.md). As seções abaixo preservam a situação e a pesquisa anteriores ao recebimento dos arquivos.
+
 Pesquisa em 6/11/2026. Objetivo: localizar pedidos, catálogo e estabelecimentos de Singapura, Estocolmo e Taipei, incluindo teste original quando fornecido. As conclusões descrevem esta pesquisa; não provam inexistência de outra cópia na internet.
 
 ## Cobertura obtida

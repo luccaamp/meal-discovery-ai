@@ -1,8 +1,18 @@
 # Dados reais obtidos e acesso à distribuição original
 
-Atualizado em 6/11/2026. **Três tabelas reais de Singapura e um derivado de Estocolmo foram baixados automaticamente.** A distribuição original completa continua com acesso pendente, já solicitado pelo usuário. [Registro da busca ampliada](SOURCE_SEARCH_2026-11-06.md).
+Atualizado em 7/11/2026. **O usuário forneceu os três ZIPs oficiais e o README. A distribuição completa foi verificada e extraída: quinze arquivos, três cidades e 4.400.000 pedidos.** Os hashes dos pacotes coincidem com a referência OmniRec, e a comparação dos campos de Singapura confirmou a cópia anterior. [Decisão de quais dados usar e auditoria](OFFICIAL_DATA_MIGRATION.md). O [registro da busca anterior](SOURCE_SEARCH_2026-11-06.md) foi mantido como histórico.
 
-## Cópia pública mais completa: Singapura
+## Fonte principal atual: distribuição oficial
+
+Dados em `data/raw/dhrd-official-v1/data_sg/`, `data_se/` e `data_tw/`, ignorados pelo Git. Arquivos originais enviados pelo usuário foram preservados na raiz do workspace. [Manifesto agregado](../evaluations/results/official-archives-manifest-v1.json) e [registro de fontes](../configs/official-source-selection-v1.json).
+
+Usar Singapura como cidade principal, com `orders_sg_train.txt`, `products_sg.txt` e `vendors_sg.txt`. Reservar `orders_sg_test.txt` para avaliação final. `orders_sg.txt` já contém treino e teste: serve para auditoria e não deve ser somado aos outros arquivos como mais observações. Estocolmo e Taipei permanecem como cidades separadas para etapas posteriores.
+
+Os três conjuntos oficiais têm teste temporal separado, sem IDs de pedido compartilhados entre treino/teste. O teste SG cobre 76–90; os testes SE/TW cobrem 76–89. Nenhuma métrica de modelo foi calculada nos testes oficiais. A preparação atual de reprodução do Experimento 001 continua fixada no espelho; sua migração para os originais será uma nova versão explícita.
+
+As seções abaixo descrevem as fontes históricas usadas antes de o acesso oficial ser liberado.
+
+## Fonte histórica: espelho público de Singapura
 
 Fonte dos links: [NearBite, revisão fixada](https://github.com/jpchawanda1/nearbite-recommender/blob/a58e7255e22fbf7ed60f4854c041a41ba5a5c454/scripts/download_data.py). O autor declara origem DHRD e informa que adicionou latitude/longitude decodificadas de geohash aos pedidos e estabelecimentos. Não executamos código de terceiros; implementamos downloader e auditor próprios. Os dados são identificados como `real_third_party_copy`: disponibilidade, formato e contagens foram verificados, mas não há comparação byte a byte com o pacote original.
 
@@ -34,7 +44,7 @@ Hashes SHA-256:
 - `products_sg.csv`: `63e981a45619a3a7e62af8a037ffb641e7410fee35e26b4882f9db6de5e1385c`.
 - `orders_sg_train_clean.csv`: `4d3ceb436c2f66872663357df223fb45b7cff9753c60ca70cd180f62d7acf1c6`.
 
-Não há teste oficial separado nessa cópia, nem arquivos completos das outras duas cidades. As contagens coincidem com a documentação do espelho. Preço não é valor em reais; geohash/coordenadas decodificadas não são localização exata ou confirmação de raio de entrega. O adaptador de treino já trata o índice de exportação e dias textuais explicitamente; os arquivos baixados não foram alterados.
+O espelho não contém teste oficial separado nem arquivos completos das outras duas cidades; esses arquivos agora estão na distribuição oficial recebida. Preço não é valor em reais; geohash/coordenadas decodificadas não são localização exata ou confirmação de raio de entrega. O adaptador de reprodução trata índice e dias textuais explicitamente. Os campos originais da cópia foram comparados linha a linha e coincidem com os arquivos oficiais de Singapura.
 
 ## Distribuição acadêmica disponível
 

@@ -2,6 +2,8 @@
 
 Implementados: auditor CSV, preparação específica da cópia real de Singapura em SQLite, contratos de contexto/quarentena e validação temporal de três recomendadores. A primeira execução real usou todos os 109.842 usuários de validação. Fixtures sintéticas existem somente em testes. API, índices de busca, agente, frontend e n8n permanecem planejados.
 
+Atualização de origem: a distribuição oficial completa foi recebida, verificada e auditada em 7/11/2026. `official-source-selection-v1.json` registra os papéis dos quinze arquivos. O extrator e o auditor oficiais estão implementados; o adaptador de treino atual continua fixado no espelho para reproduzir o Experimento 001. A próxima versão deverá ler os originais diretamente, com teste oficial fisicamente separado. [Plano da migração](OFFICIAL_DATA_MIGRATION.md).
+
 Fluxo executável atual: CSVs reais fixados por SHA-256 → normalização e quarentena por pedido → SQLite somente leitura para análise → perfis de treino congelados → popularidade/repetição/cosseno por cesta → relatório de validação. Contextos preservam geohash, rede e dia da semana para próximas etapas; ainda não são filtros de candidatos. SQLite foi escolhido para integridade e transações sem dependência de execução adicional; a arquitetura abaixo permanece a visão de evolução.
 
 ```mermaid

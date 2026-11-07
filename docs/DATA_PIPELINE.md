@@ -1,5 +1,9 @@
 # Dados e primeira comparação de recomendação
 
+## Distribuição oficial recebida em 7/11/2026
+
+Os três pacotes originais estão extraídos e verificados em `data/raw/dhrd-official-v1/`. Usar `python scripts/verify_official_archives.py` e `python scripts/audit_official_data.py` para reproduzir a inspeção. [Papéis dos arquivos e decisão de fonte](OFFICIAL_DATA_MIGRATION.md). O arquivo completo de pedidos é a união de treino e teste e não deve ser carregado como mais exemplos de treino. A reprodução histórica abaixo continua usando o adaptador do espelho, sem redirecionamento silencioso da origem.
+
 ## O que já executa
 
 1. `audit`: inventário de CSVs.
