@@ -1,9 +1,34 @@
-# Automação n8n planejada
+# Automação n8n executada
 
-Ainda não existe workflow exportado ou execução real.
+O [workflow versionado](evaluation-report-v1.json) foi importado e executado no n8n 2.46.6 com Node 24.22.2. Consulta a API real, valida o contrato e gera um relatório Markdown com os experimentos de recomendação e recuperação. Não treina modelos dentro do workflow nem envia mensagens a terceiros.
 
-Fluxo proposto: gatilho manual → consultar API própria de resultados de avaliação concluída → validar run_id/esquema → consolidar comparação com execução anterior → gerar relatório Markdown local. Não executar treinamento longo dentro de uma chamada síncrona do n8n.
+Fluxo: gatilho manual → `GET /v1/evaluations` → validação e formatação em JavaScript. Os três nós concluíram com sucesso. [Evidência sanitizada](../../evaluations/results/n8n-execution-v1.json) e [Markdown produzido](../../evaluations/results/n8n-evaluation-report-v1.md).
 
-O relatório informa versões, amostra, métricas, falhas e custo. Sinalizar regressões só quando houver referência comparável e limiar documentado. Testar falha da API, execução duplicada e credencial inválida. Não enviar mensagens a terceiros automaticamente.
+## Reproduzir no Windows
 
-Ao implementar: versionar export JSON sanitizado, parâmetros de ambiente, instruções de importação, capturas de execução e tempo manual/automatizado. Credenciais permanecem no armazenamento local da ferramenta.
+Com a API em 8000, na raiz do repositório:
+
+```powershell
+.venv\Scripts\python scripts/setup_n8n.py
+$env:PATH="$PWD\.tools\node-v24.22.2-win-x64;"+$env:PATH
+$env:N8N_USER_FOLDER="$PWD\.tools\n8n-state"
+$env:N8N_DIAGNOSTICS_ENABLED='false'
+$env:N8N_PERSONALIZATION_ENABLED='false'
+$env:N8N_VERSION_NOTIFICATIONS_ENABLED='false'
+.tools\node-v24.22.2-win-x64\node.exe .tools\n8n\node_modules\n8n\bin\n8n import:workflow --input=workflows/n8n/evaluation-report-v1.json
+.venv\Scripts\python scripts/run_n8n_report.py --output reports/n8n-run.json --markdown reports/n8n-report.md
+```
+
+Node portátil e estado privado ficam em `.tools/`, ignorado pelo Git. A primeira instalação de n8n pode demorar vários minutos. O helper fixa versão e SHA do Node e a versão principal do pacote n8n; o lock transitivo desta instalação fica local. Não modifica o Node global. Em outro sistema, usar a instalação oficial de Node 24 e n8n 2.46.6; o helper de exportação atual foi testado no Windows.
+
+Para editar visualmente, iniciar o n8n com o mesmo `N8N_USER_FOLDER` e abrir sua instância local. Configurações, chaves, tokens de retomada e logs brutos da execução não devem ser exportados. O script publica somente nomes/status/durações dos nós, hash do Markdown e contagem de relatórios.
+
+## Medidas e limites
+
+A execução medida levou cerca de 8,75 segundos incluindo inicialização da CLI. O relatório distingue os protocolos e informa o caráter fraco dos rótulos de recuperação. Não mede tempo manual; não há economia percentual demonstrada, agendamento recorrente, detecção de regressões ou envio automático de mensagens.
+
+Também foram verificados repetição com o mesmo input, produzindo o mesmo SHA-256 do Markdown, e falha real com uma cópia controlada apontando a uma fonte local indisponível. [Contratos executados](../../evaluations/results/n8n-contract-checks-v1.json). Não houve teste de credencial inválida, pois este workflow não usa credenciais.
+
+O runner usado foi JavaScript. O n8n também informou ausência do ambiente opcional de runner Python; nenhum nó deste workflow depende dele. A automação local concluiu com sucesso.
+
+Referências: [CLI oficial](https://docs.n8n.io/hosting/cli-commands/) e [instalação](https://docs.n8n.io/hosting/installation/npm/). A execução é manual e local, sem conta comercial ou implantação pública do n8n.

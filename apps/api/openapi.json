@@ -3,7 +3,7 @@
   "info": {
     "title": "Meal Discovery AI",
     "description": "Read-only discovery over the official historical Singapore catalog. Prices are normalized dataset values, not currency. No live availability or allergy guarantees.",
-    "version": "0.5.0"
+    "version": "0.7.0"
   },
   "paths": {
     "/health": {
@@ -292,6 +292,308 @@
         }
       }
     },
+    "/v1/discovery/search": {
+      "get": {
+        "tags": [
+          "discovery"
+        ],
+        "summary": "Discovery",
+        "operationId": "discovery_v1_discovery_search_get",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "title": "Query"
+            }
+          },
+          {
+            "name": "cuisine",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cuisine"
+            }
+          },
+          {
+            "name": "min_price",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Dataset-normalized price, not currency",
+              "title": "Min Price"
+            },
+            "description": "Dataset-normalized price, not currency"
+          },
+          {
+            "name": "max_price",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Dataset-normalized price, not currency",
+              "title": "Max Price"
+            },
+            "description": "Dataset-normalized price, not currency"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 10,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiscoveryResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Verified catalog unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/recommendations": {
+      "post": {
+        "tags": [
+          "recommendations"
+        ],
+        "summary": "Recommendations",
+        "operationId": "recommendations_v1_recommendations_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecommendationParams"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendationResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Verified catalog unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/assistant": {
+      "post": {
+        "tags": [
+          "assistant"
+        ],
+        "summary": "Assistant",
+        "operationId": "assistant_v1_assistant_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssistantRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistantResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Verified catalog unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/system": {
+      "get": {
+        "tags": [
+          "operations"
+        ],
+        "summary": "System",
+        "operationId": "system_v1_system_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Verified catalog unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/evaluations": {
+      "get": {
+        "tags": [
+          "evaluations"
+        ],
+        "summary": "Evaluations",
+        "operationId": "evaluations_v1_evaluations_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Verified catalog unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/catalog/items/{vendor_id}/{product_id}": {
       "get": {
         "tags": [
@@ -370,6 +672,168 @@
   },
   "components": {
     "schemas": {
+      "AssistantContext": {
+        "properties": {
+          "last_query": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Query"
+          },
+          "cuisine": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cuisine"
+          },
+          "min_price": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Price"
+          },
+          "max_price": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Price"
+          },
+          "selected_items": {
+            "items": {
+              "$ref": "#/components/schemas/ItemRef"
+            },
+            "type": "array",
+            "maxItems": 5,
+            "title": "Selected Items"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "AssistantContext"
+      },
+      "AssistantRequest": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Message"
+          },
+          "context": {
+            "$ref": "#/components/schemas/AssistantContext"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "title": "AssistantRequest"
+      },
+      "AssistantResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "needs_clarification",
+              "no_results"
+            ],
+            "title": "Status"
+          },
+          "answer": {
+            "type": "string",
+            "title": "Answer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Item"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "context": {
+            "$ref": "#/components/schemas/AssistantContext"
+          },
+          "tools": {
+            "items": {
+              "$ref": "#/components/schemas/ToolTrace"
+            },
+            "type": "array",
+            "title": "Tools"
+          },
+          "planner": {
+            "type": "string",
+            "title": "Planner"
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model"
+          },
+          "usage": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Usage"
+          },
+          "elapsed_ms": {
+            "type": "number",
+            "title": "Elapsed Ms"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "answer",
+          "items",
+          "context",
+          "tools",
+          "planner",
+          "model",
+          "usage",
+          "elapsed_ms",
+          "warnings"
+        ],
+        "title": "AssistantResponse"
+      },
       "Cuisine": {
         "properties": {
           "name": {
@@ -407,6 +871,61 @@
           "provenance"
         ],
         "title": "CuisinesResult"
+      },
+      "DiscoveryResult": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "needs_clarification"
+            ],
+            "title": "Status"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "query": {
+            "type": "string",
+            "title": "Query"
+          },
+          "resolved_query": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resolved Query"
+          },
+          "expansion_version": {
+            "type": "string",
+            "title": "Expansion Version"
+          },
+          "result": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SearchResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "message",
+          "query",
+          "resolved_query",
+          "expansion_version",
+          "result"
+        ],
+        "title": "DiscoveryResult"
       },
       "ErrorDetail": {
         "properties": {
@@ -584,6 +1103,29 @@
         ],
         "title": "Item"
       },
+      "ItemRef": {
+        "properties": {
+          "vendor_id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Vendor Id"
+          },
+          "product_id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Product Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "vendor_id",
+          "product_id"
+        ],
+        "title": "ItemRef"
+      },
       "ItemResult": {
         "properties": {
           "item": {
@@ -671,6 +1213,170 @@
         ],
         "title": "Provenance"
       },
+      "RecommendationParams": {
+        "properties": {
+          "seeds": {
+            "items": {
+              "$ref": "#/components/schemas/ItemRef"
+            },
+            "type": "array",
+            "maxItems": 5,
+            "title": "Seeds"
+          },
+          "cuisine": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cuisine"
+          },
+          "min_price": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Price"
+          },
+          "max_price": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Price"
+          },
+          "limit": {
+            "type": "integer",
+            "maximum": 20.0,
+            "minimum": 1.0,
+            "title": "Limit",
+            "default": 10
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "RecommendationParams"
+      },
+      "RecommendationResult": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/RecommendedItem"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "seeds": {
+            "items": {
+              "$ref": "#/components/schemas/ItemRef"
+            },
+            "type": "array",
+            "title": "Seeds"
+          },
+          "filters": {
+            "$ref": "#/components/schemas/Filters"
+          },
+          "provenance": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Provenance"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "seeds",
+          "filters",
+          "provenance"
+        ],
+        "title": "RecommendationResult"
+      },
+      "RecommendedItem": {
+        "properties": {
+          "vendor_id": {
+            "type": "string",
+            "title": "Vendor Id"
+          },
+          "product_id": {
+            "type": "string",
+            "title": "Product Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "unit_price": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit Price"
+          },
+          "primary_cuisine": {
+            "type": "string",
+            "title": "Primary Cuisine"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "supporting_co_baskets": {
+            "type": "integer",
+            "title": "Supporting Co Baskets"
+          },
+          "training_baskets": {
+            "type": "integer",
+            "title": "Training Baskets"
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "basket_association",
+              "historical_popularity"
+            ],
+            "title": "Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "vendor_id",
+          "product_id",
+          "name",
+          "unit_price",
+          "primary_cuisine",
+          "score",
+          "supporting_co_baskets",
+          "training_baskets",
+          "reason"
+        ],
+        "title": "RecommendedItem"
+      },
       "SearchItem": {
         "properties": {
           "vendor_id": {
@@ -754,6 +1460,35 @@
           "ranking"
         ],
         "title": "SearchResult"
+      },
+      "ToolTrace": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "arguments": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Arguments"
+          },
+          "duration_ms": {
+            "type": "number",
+            "title": "Duration Ms"
+          },
+          "result_count": {
+            "type": "integer",
+            "title": "Result Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "arguments",
+          "duration_ms",
+          "result_count"
+        ],
+        "title": "ToolTrace"
       }
     }
   }

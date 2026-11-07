@@ -31,6 +31,8 @@ Planejamento indicativo: M0–M2 em 15–20h; M3–M4 em 15–20h; M5 em 12–18
 
 ### Estado da implementação em 7/11/2026
 
+Versão 0.7: produto local Mesa entregue, com React/TypeScript, Qwen local, ferramentas de busca/recomendação, evidências, laboratório e workflow n8n executado. Foram verificados 66 testes automatizados, 13 contratos HTTP reais e 48 itens contra o catálogo. M4/M5 têm uma fatia funcional; faltam avaliações independentes, estudos com pessoas e implantação pública. M6 tem consolidação manual via n8n; não há agendamento ou economia de tempo manual medida. [Guia do produto](PRODUCT_GUIDE.md).
+
 Piloto semântico executado em 10.000 produtos reais, selecionados de modo determinístico e independente das consultas. Embeddings E5 locais e comparação lexical/semântica/híbrida estão implementados. A qualidade observada não justifica substituir a busca atual. A avaliação de desenvolvimento usa regras de nome como rótulos fracos; revisão humana preparada e ainda pendente. [Experimento 003](EXPERIMENT_003.md) e [estado consolidado](PROJECT_STATUS.md).
 
 API de catálogo entregue: busca, detalhe, culinárias e metadados; contratos HTTP/OpenAPI, leitura exclusiva, validação, rastreabilidade e erros explícitos. Foram executados 50 testes e verificação por HTTP no catálogo completo. M5 tem sua primeira parte de backend; frontend e fluxo conversacional continuam pendentes. [Execução e limites](../apps/api/README.md).

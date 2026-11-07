@@ -1,4 +1,4 @@
-"""Read-only catalog API. No LLM, synthetic fallback, or source-data writes."""
+"""Real-catalog tools, bounded assistant, evaluations and the built product UI."""
 
 import json
 import logging
@@ -12,13 +12,19 @@ from uuid import uuid4
 from fastapi import Depends, FastAPI, HTTPException, Path as PathParam, Query, Request
 from fastapi.exceptions import RequestValidationError, ResponseValidationError
 from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from pydantic import ValidationError
 
 from .api_models import (CuisinesResult, ErrorResponse, Health, ItemResult, Provenance,
-                         SearchParams, SearchResult)
+                         SearchParams, SearchResult, DiscoveryResult, RecommendationParams,
+                         RecommendationResult, AssistantRequest, AssistantResponse)
 from .catalog import (CatalogUnavailable, catalog_cuisines, catalog_item,
                       catalog_metadata, search_catalog)
+from .discovery import discover
+from .assistant import HttpPlanner, run_assistant
+from .serving import recommend
 
 logger = logging.getLogger("meal_discovery.api")
 
@@ -55,13 +61,14 @@ Identifier = Annotated[str, PathParam(min_length=1, max_length=200)]
 
 def create_app(index: Path | None = None) -> FastAPI:
     application = FastAPI(
-        title="Meal Discovery AI", version="0.5.0",
+        title="Meal Discovery AI", version="0.7.0",
         description="Read-only discovery over the official historical Singapore catalog. Prices are normalized dataset values, not currency. No live availability or allergy guarantees.",
         responses={422: {"model": ErrorResponse, "description": "Invalid query parameters"},
                    503: {"model": ErrorResponse, "description": "Verified catalog unavailable"}},
     )
     application.state.catalog_reader = CatalogReader(
         Path(index) if index is not None else Path(os.environ.get("MEAL_CATALOG_INDEX", "data/processed/singapore-catalog-v1.sqlite")))
+    application.state.serving_index = Path(os.environ.get("MEAL_SERVING_INDEX", "data/processed/singapore-serving-v1.sqlite"))
 
     @application.middleware("http")
     async def request_trace(request: Request, call_next):
@@ -126,6 +133,62 @@ def create_app(index: Path | None = None) -> FastAPI:
     def search(params: Annotated[SearchParams, Query()], reader: Reader):
         return reader.search(params)
 
+    @application.get("/v1/discovery/search", response_model=DiscoveryResult, tags=["discovery"])
+    def discovery(params: Annotated[SearchParams, Query()], reader: Reader):
+        return discover(reader.index, **params.model_dump(), **reader.options)
+
+    def recommendations_for(arguments):
+        params = RecommendationParams.model_validate(arguments)
+        result = recommend(application.state.serving_index,
+                         [(seed.vendor_id, seed.product_id) for seed in params.seeds],
+                         cuisine=params.cuisine, min_price=params.min_price, max_price=params.max_price, limit=params.limit)
+        if result["provenance"]["source_database_sha256"] != application.state.catalog_reader.metadata()["source_database_sha256"]:
+            raise CatalogUnavailable("Recommendation and catalog sources differ")
+        return result
+
+    @application.post("/v1/recommendations", response_model=RecommendationResult, tags=["recommendations"])
+    def recommendations(params: RecommendationParams):
+        return recommendations_for(params.model_dump())
+
+    @application.post("/v1/assistant", response_model=AssistantResponse, tags=["assistant"])
+    def assistant(params: AssistantRequest, reader: Reader):
+        return run_assistant(params, reader, recommendations_for)
+
+    @application.get("/v1/system", tags=["operations"])
+    def system():
+        from urllib.request import urlopen
+        from urllib.parse import urlsplit
+        planner = HttpPlanner()
+        available = False
+        if planner.provider == "local" and urlsplit(planner.endpoint).hostname in {"localhost", "127.0.0.1", "::1"}:
+            try:
+                with urlopen(planner.endpoint.rstrip("/") + "/health", timeout=1) as response:
+                    available = response.status == 200
+            except OSError:
+                pass
+        return {"api_version": "0.7.0", "assistant": {"provider": planner.provider, "model": planner.model,
+                "available": available, "openai_configured": bool(planner.key and planner.model and planner.provider == "openai")},
+                "recommendations_ready": application.state.serving_index.is_file(),
+                "semantic_status": "experimental_pilot_not_used_by_product"}
+
+    @application.get("/v1/evaluations", tags=["evaluations"])
+    def evaluations():
+        directory = Path(os.environ.get("MEAL_EVALUATIONS_DIR", str(Path(__file__).resolve().parents[2] / "evaluations/results")))
+        reports = []
+        for identifier, filename in (("recommendation", "singapore-official-validation-v2.json"),
+                                     ("retrieval", "retrieval-development-v1.json")):
+            path = directory / filename
+            if not path.is_file():
+                continue
+            report = json.loads(path.read_text(encoding="utf-8"))
+            if identifier == "recommendation":
+                reports.append({"id": identifier, "kind": "offline_next_basket_validation", "users": report["evaluation"]["users"],
+                                "protocol": report["protocol"], "models": report["models"], "limitations": report["limitations"]})
+            else:
+                reports.append({"id": identifier, "kind": report["kind"], "products": report["retrieval_manifest"]["indexed_products"],
+                                "queries": len(report["queries"]), "models": report["summary"], "limitations": report["limitations"]})
+        return {"schema_version": 1, "reports": reports, "official_test_evaluated": False}
+
     @application.get("/v1/catalog/items/{vendor_id}/{product_id}", response_model=ItemResult,
                      responses={404: {"model": ErrorResponse, "description": "Item not found"}}, tags=["catalog"])
     def item(vendor_id: Identifier, product_id: Identifier, reader: Reader):
@@ -133,6 +196,16 @@ def create_app(index: Path | None = None) -> FastAPI:
         if result is None:
             raise HTTPException(404, "Item not found in the historical catalog.")
         return result
+
+    web = Path(os.environ.get("MEAL_WEB_DIST", str(Path(__file__).resolve().parents[2] / "apps/web/dist")))
+    if (web / "assets").is_dir():
+        application.mount("/assets", StaticFiles(directory=web / "assets"), name="web-assets")
+
+    @application.get("/", include_in_schema=False)
+    def web_index():
+        if not (web / "index.html").is_file():
+            raise HTTPException(503, "Build the React interface with npm run build in apps/web.")
+        return FileResponse(web / "index.html", headers={"Cache-Control": "no-cache"})
 
     return application
 

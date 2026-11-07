@@ -2,7 +2,17 @@
 
 Recomendação de refeições e busca conversacional com dados reais da Delivery Hero.
 
-**Status: pipeline oficial, recomendação avaliada, busca lexical completa e API executados.** O catálogo pesquisável contém 1.066.840 produtos reais de Singapura. Há também um piloto semântico/híbrido em 10.000 produtos, ainda experimental por limitações de qualidade. A validação de recomendação compara três modelos em 175.358 clientes. Nenhuma métrica foi calculada nos pedidos de teste oficial. Interface e LLM permanecem planejados. [Estado e visão final](docs/PROJECT_STATUS.md) · [Executar a API](apps/api/README.md) · [Experimento semântico](docs/EXPERIMENT_003.md).
+**Mesa: produto local com catálogo real, assistente e laboratório.** Explore 1.066.840 produtos de Singapura, selecione referências e converse com um Qwen local que aciona ferramentas somente leitura. Recomendações usam associações em pedidos reais, com fallback explícito de popularidade. O n8n já consolidou os experimentos em uma execução real. [Executar o produto](docs/PRODUCT_GUIDE.md) · [Estado e limites](docs/PROJECT_STATUS.md) · [API](apps/api/README.md).
+
+**Nesta máquina, dados, modelos e build já estão preparados.** Para abrir:
+
+```powershell
+.venv\Scripts\python scripts/run_local.py
+```
+
+Acessar [Mesa local](http://127.0.0.1:8000). Ctrl+C encerra o modelo e a API. A aplicação completa ainda não está hospedada publicamente.
+
+A avaliação de recomendação compara três modelos em 175.358 clientes. O piloto semântico/híbrido cobre 10.000 produtos e permanece experimental. Nenhuma métrica foi calculada nos pedidos de teste oficial. A [avaliação do assistente](evaluations/results/product-flow-v1.json) verifica contratos de desenvolvimento, sem comprovar qualidade humana ou generalização.
 
 [Quais arquivos usar, comparação e plano de migração](docs/OFFICIAL_DATA_MIGRATION.md).
 
@@ -71,14 +81,14 @@ A preparação relacional usa um mapeamento explícito de colunas, preserva prod
 
 ```text
 apps/api/           instruções e contrato OpenAPI da API de catálogo
-apps/web/           interface React/TypeScript (planejada)
+apps/web/           interface React/TypeScript: catálogo, assistente e laboratório
 src/meal_discovery/ auditoria, importação, recomendação e avaliação
 configs/           exemplo de mapeamento explícito de CSVs
 data/              obtenção e armazenamento local, ignorado no Git
 models/            documentação de artefatos futuros
 evaluations/       protocolo e exemplos de casos de desenvolvimento
-prompts/           contratos e versões futuras de prompts
-workflows/n8n/     automação planejada e critérios de validação
+prompts/           documentação do prompt de planejamento implementado
+workflows/n8n/     workflow real de consolidação de experimentos
 docs/              plano, arquitetura, design e evidências
 reports/           relatórios locais, ignorados no Git
 tests/             verificações de integridade do auditor
@@ -97,7 +107,7 @@ tests/             verificações de integridade do auditor
 - [Explicação da implementação para estudo](docs/LEARNING.md)
 - [Registro de decisões](docs/DECISIONS.md)
 
-As funcionalidades serão marcadas como entregues apenas com execução e evidência. A API serve BM25, filtros, detalhes e procedência sobre o catálogo real completo. A recuperação semântica existe como piloto via CLI, com corpus e qualidade limitados; não substitui a API. Julgamentos humanos, LLM e produto visual permanecem pendentes.
+As funcionalidades serão marcadas como entregues apenas com execução e evidência. O produto usa busca textual com glossário explícito e planejamento por LLM local, sem promover o piloto de embeddings de qualidade insuficiente. Julgamentos humanos, comparação comercial entre provedores e implantação pública permanecem pendentes. [Roteiro para explicar o projeto](docs/INTERVIEW_GUIDE.md).
 
 ## Fontes
 

@@ -9,6 +9,7 @@ __pycache__/
 .env.*
 !.env.example
 node_modules/
+.tools/
 .next/
 dist/
 build/

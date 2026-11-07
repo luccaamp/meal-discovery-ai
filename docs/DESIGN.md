@@ -1,6 +1,8 @@
 # Direção de experiência e visual
 
-Objetivo: produto de descoberta de refeições profissional, claro e acessível. Esta é uma especificação; não há interface implementada ou protótipo aprovado nesta versão.
+Implementado como Mesa: frontend React/TypeScript com descoberta, conversa e laboratório, conectado ao backend real. A direção abaixo orientou a implementação. Não foi realizado estudo com usuários nem há protótipo aprovado por terceiros.
+
+Verificação: layouts 360/768/1440 pixels CSS sem overflow horizontal, navegação real, diálogo com rótulo e Escape, retorno ao topo nas mudanças de área, estado vazio e recuperação de busca. Seis combinações principais de texto foram corrigidas para razões de contraste 6,22–6,49. Isso não é certificação completa de acessibilidade.
 
 ## Telas
 

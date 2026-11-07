@@ -1,5 +1,7 @@
 # API de catálogo real
 
+Atualização v0.7: também serve `GET /v1/discovery/search`, `POST /v1/recommendations`, `POST /v1/assistant`, `GET /v1/system`, `GET /v1/evaluations` e o build React em `/`. O [guia do produto](../../docs/PRODUCT_GUIDE.md) é o ponto de entrada atual. A OpenAPI versionada inclui os novos contratos. A busca lexical original e a cadeia de procedência permanecem disponíveis.
+
 FastAPI sobre os 1.066.840 produtos oficiais de Singapura. Implementação em `src/meal_discovery/api.py`, modelos em `api_models.py` e [contrato OpenAPI](openapi.json).
 
 ## Executar
@@ -28,7 +30,7 @@ Abrir a [documentação interativa](http://127.0.0.1:8000/docs). O índice padr�
 
 Exemplo: [busca por chicken rice](http://127.0.0.1:8000/v1/catalog/search?query=chicken%20rice&limit=5). `query` exige 1–200 caracteres e termos alfanuméricos; `limit`, 1–50. Culinária é um rótulo exato do catálogo. Preços devem ser finitos, não negativos e ordenados. Parâmetros desconhecidos na busca são rejeitados.
 
-Preços são valores normalizados do dataset, sem moeda ou conversão para reais. O catálogo histórico não comprova estoque, entrega, ingredientes ou segurança alimentar. Não há tradução, embeddings ou LLM. BM25 não é probabilidade.
+Preços são valores normalizados do dataset, sem moeda ou conversão para reais. O catálogo histórico não comprova estoque, entrega, ingredientes ou segurança alimentar. As rotas originais `/v1/catalog` fazem busca literal; `/v1/discovery` acrescenta glossário e `/v1/assistant` usa o planejador documentado no guia. Embeddings não foram promovidos para o produto. BM25 não é probabilidade.
 
 ## Erros e rastreabilidade
 
@@ -52,6 +54,6 @@ python scripts/check_api.py --base-url http://127.0.0.1:8000 --output reports/ap
 
 Fixtures ficam nos testes com substituição explícita de dependência. Não existe parâmetro HTTP para habilitá-las. A instalação básica sem extras continua disponível; nela os testes da API são pulados explicitamente. Versões diretas e transitivas estão fixadas em `requirements-api.lock`, aplicado como constraints, sem hashes dos pacotes. O CI verifica instalação e testes em Python 3.11/3.13.
 
-Recomendação por HTTP, agente, embeddings, frontend, autenticação, limitação de requisições e implantação pública permanecem pendentes. Esta versão foi verificada localmente em loopback.
+Recomendação, planejador local e frontend foram adicionados na v0.7, com contratos próprios na OpenAPI. Embeddings continuam em piloto fora da API de produto. Autenticação, limitação de requisições para acesso externo e implantação pública permanecem pendentes. A versão atual foi verificada em loopback.
 
 Referências: [validação](https://fastapi.tiangolo.com/tutorial/query-params-str-validations/), [erros](https://fastapi.tiangolo.com/tutorial/handling-errors/) e [testes](https://fastapi.tiangolo.com/tutorial/testing/). A integração de testes usa HTTPX2 conforme a versão instalada de Starlette.

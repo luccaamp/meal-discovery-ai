@@ -1,6 +1,8 @@
 # Arquitetura e evolução
 
-Implementados: auditoria oficial, preparação de Singapura em SQLite, contexto/quarentena, validação de três recomendadores, FTS5/BM25 e API FastAPI. A validação interna oficial usou 175.358 clientes. Há também embeddings E5 via ONNX e busca híbrida RRF em piloto de 10.000 produtos, separados da API lexical completa. Fixtures sintéticas existem somente em testes. Agente, frontend e n8n permanecem planejados.
+Produto atual: React/TypeScript servido pelo FastAPI, com o mesmo catálogo SQLite usado pelas ferramentas. Descoberta aplica glossário PT/EN explícito. O assistente usa uma chamada estruturada ao Qwen local via llama.cpp, valida um plano limitado e executa busca ou recomendação somente leitura. A resposta factual é montada pelos campos reais, sem geração livre de itens. O artefato de recomendação foi ajustado até o dia 61 e sua origem é conferida contra a do catálogo. A automação n8n consulta resultados versionados e produz Markdown. [Guia e limites](PRODUCT_GUIDE.md).
+
+Dados e modelos: auditoria oficial, preparação de Singapura em SQLite, contexto/quarentena, validação de três recomendadores, FTS5/BM25 e API FastAPI. A validação interna oficial usou 175.358 clientes. Embeddings E5 via ONNX e busca híbrida RRF permanecem em piloto de 10.000 produtos, separados da busca do produto. Fixtures sintéticas existem somente em testes.
 
 Origem: a distribuição oficial completa foi recebida, verificada e auditada em 7/11/2026. `official-source-selection-v1.json` registra os papéis dos quinze arquivos. O novo adaptador lê os originais com teste oficial fisicamente separado. O adaptador histórico continua disponível para reproduzir o Experimento 001. [Migração](OFFICIAL_DATA_MIGRATION.md) e [Experimento 002](EXPERIMENT_002.md).
 
