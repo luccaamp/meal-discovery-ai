@@ -28,7 +28,7 @@
       "query": "chicken rice",
       "total_matches": 27621,
       "returned": 5,
-      "local_http_elapsed_ms": 111.12640000646934,
+      "local_http_elapsed_ms": 112.19620000338182,
       "detail_contract": "passed",
       "combined_filters": "passed"
     },
@@ -36,7 +36,7 @@
       "query": "pizza",
       "total_matches": 45706,
       "returned": 5,
-      "local_http_elapsed_ms": 64.58260002546012,
+      "local_http_elapsed_ms": 62.33129999600351,
       "detail_contract": "passed",
       "combined_filters": "passed"
     },
@@ -44,7 +44,7 @@
       "query": "milk tea",
       "total_matches": 13826,
       "returned": 5,
-      "local_http_elapsed_ms": 105.50920001696795,
+      "local_http_elapsed_ms": 73.46409995807335,
       "detail_contract": "passed",
       "combined_filters": "passed"
     }
@@ -55,7 +55,7 @@
   "trace_headers": "passed",
   "limitations": "Three English literal queries against local HTTP, no human relevance labels or load test. Official test orders are not used.",
   "implementation_sha256": {
-    "api.py": "78108341a3a5debe2f2b9872536777b979339144cab5c1178415936b6f20f6b5",
+    "api.py": "43e189c8892026ec579f7c59d33150b70ecdc7702d2d563aaa86894e4fff4041",
     "api_models.py": "04f462cd3306bbe362aa0b2bd59d411cfea6272d39e47a3412d4e6bf027b50e5",
     "catalog.py": "228b5e061ad53bb96fd5d74c938fd97ba5fefaba0ecc8a1f9a483229264d0d6a"
   }

@@ -57,7 +57,8 @@ def create_app(index: Path | None = None) -> FastAPI:
     application = FastAPI(
         title="Meal Discovery AI", version="0.5.0",
         description="Read-only discovery over the official historical Singapore catalog. Prices are normalized dataset values, not currency. No live availability or allergy guarantees.",
-        responses={422: {"model": ErrorResponse}, 503: {"model": ErrorResponse}},
+        responses={422: {"model": ErrorResponse, "description": "Invalid query parameters"},
+                   503: {"model": ErrorResponse, "description": "Verified catalog unavailable"}},
     )
     application.state.catalog_reader = CatalogReader(
         Path(index) if index is not None else Path(os.environ.get("MEAL_CATALOG_INDEX", "data/processed/singapore-catalog-v1.sqlite")))
@@ -126,7 +127,7 @@ def create_app(index: Path | None = None) -> FastAPI:
         return reader.search(params)
 
     @application.get("/v1/catalog/items/{vendor_id}/{product_id}", response_model=ItemResult,
-                     responses={404: {"model": ErrorResponse}}, tags=["catalog"])
+                     responses={404: {"model": ErrorResponse, "description": "Item not found"}}, tags=["catalog"])
     def item(vendor_id: Identifier, product_id: Identifier, reader: Reader):
         result = reader.item(vendor_id, product_id)
         if result is None:
