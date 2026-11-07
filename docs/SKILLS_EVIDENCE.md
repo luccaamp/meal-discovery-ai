@@ -14,7 +14,7 @@ Fonte: [vaga oficial](https://job-boards.greenhouse.io/ifoodcarreiras/jobs/89010
 | Orquestração de agentes | Agente com ferramentas e estado; revisão adicional experimental | Traços e comparação com fluxo simples | Planejado |
 | n8n/Make/Zapier | Escolha inicial: n8n para consolidar uma avaliação já executada | Export sanitizado, execução e tempo medido | Planejado |
 | Cursor/v0/Bolt/Replit | Escolher uma ferramenta acessível para prototipação de uma tela real | Antes/depois, revisão e integração pelo candidato | Planejado, acesso não verificado |
-| APIs | FastAPI entre produto e funções de busca/recomendação | Contratos e testes de comportamento | Planejado |
+| APIs | FastAPI entre produto e funções de busca/recomendação | Contratos e testes de comportamento | Catálogo entregue: OpenAPI, validação, rastreabilidade, testes e execução HTTP sobre 1.066.840 produtos; recomendação e agente por HTTP pendentes |
 | Análise com IA | Investigação assistida dos erros, com números de ferramentas | Relatório auditável e correções revisadas | Planejado |
 | MCP | Adaptador das funções para cliente externo | Sessão reproduzível e comparação com API | Extensão planejada |
 | Produto e uso | Interface publicada e tarefas observadas | Taxa de conclusão, tempo e feedback consentido | Planejado |

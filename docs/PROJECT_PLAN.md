@@ -31,6 +31,8 @@ Planejamento indicativo: M0–M2 em 15–20h; M3–M4 em 15–20h; M5 em 12–18
 
 ### Estado da implementação em 7/11/2026
 
+API de catálogo entregue: busca, detalhe, culinárias e metadados; contratos HTTP/OpenAPI, leitura exclusiva, validação, rastreabilidade e erros explícitos. Foram executados 50 testes e verificação por HTTP no catálogo completo. M5 tem sua primeira parte de backend; frontend e fluxo conversacional continuam pendentes. [Execução e limites](../apps/api/README.md).
+
 Estado atual: migração para os arquivos oficiais concluída. Validação interna v2 em 175.358 clientes, com teste oficial separado. Busca lexical BM25 executada em 1.066.840 produtos, com filtros de culinária e preço normalizado e verificações em consultas reais. M3 está parcialmente entregue: faltam julgamentos de relevância, embeddings e comparação híbrida. API, agente e interface permanecem pendentes. [Experimento 002](EXPERIMENT_002.md).
 
 Registro histórico das etapas anteriores:

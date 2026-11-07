@@ -2,7 +2,7 @@
 
 Recomendação de refeições e busca conversacional com dados reais da Delivery Hero.
 
-**Status: pipeline oficial, validação temporal e busca textual executados.** O catálogo pesquisável contém 1.066.840 produtos reais de Singapura. A validação interna compara três recomendadores em 175.358 clientes. Nenhuma métrica foi calculada nos testes oficiais. API, interface e LLM permanecem planejados. [Experimento oficial e busca](docs/EXPERIMENT_002.md).
+**Status: pipeline oficial, validação temporal, busca textual e API executados.** O catálogo pesquisável contém 1.066.840 produtos reais de Singapura. A validação interna compara três recomendadores em 175.358 clientes. Nenhuma métrica foi calculada nos testes oficiais. Interface e LLM permanecem planejados. [Experimento oficial](docs/EXPERIMENT_002.md) · [Executar a API](apps/api/README.md).
 
 [Quais arquivos usar, comparação e plano de migração](docs/OFFICIAL_DATA_MIGRATION.md).
 
@@ -70,7 +70,7 @@ A preparação relacional usa um mapeamento explícito de colunas, preserva prod
 ## Estrutura
 
 ```text
-apps/api/           API de produto (planejada)
+apps/api/           instruções e contrato OpenAPI da API de catálogo
 apps/web/           interface React/TypeScript (planejada)
 src/meal_discovery/ auditoria, importação, recomendação e avaliação
 configs/           exemplo de mapeamento explícito de CSVs
@@ -97,7 +97,7 @@ tests/             verificações de integridade do auditor
 - [Explicação da implementação para estudo](docs/LEARNING.md)
 - [Registro de decisões](docs/DECISIONS.md)
 
-As funcionalidades serão marcadas como entregues apenas com execução e evidência. A busca atual usa correspondência textual BM25 e filtros sobre dados reais. API, busca semântica, LLM e produto visual permanecem como próximos marcos.
+As funcionalidades serão marcadas como entregues apenas com execução e evidência. A API serve busca textual BM25, filtros, detalhes e procedência sobre dados reais, com validação por HTTP. Busca semântica, LLM e produto visual permanecem como próximos marcos.
 
 ## Fontes
 

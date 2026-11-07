@@ -1,8 +1,8 @@
-# Arquitetura proposta
+# Arquitetura e evolução
 
-Implementados: auditor CSV, preparação específica da cópia real de Singapura em SQLite, contratos de contexto/quarentena e validação temporal de três recomendadores. A primeira execução real usou todos os 109.842 usuários de validação. Fixtures sintéticas existem somente em testes. API, índices de busca, agente, frontend e n8n permanecem planejados.
+Implementados: auditoria oficial, preparação de Singapura em SQLite, contratos de contexto/quarentena, validação temporal de três recomendadores, índice FTS5/BM25 e API FastAPI. A validação interna oficial usou 175.358 clientes. Fixtures sintéticas existem somente em testes. Embeddings, agente, frontend e n8n permanecem planejados.
 
-Atualização de origem: a distribuição oficial completa foi recebida, verificada e auditada em 7/11/2026. `official-source-selection-v1.json` registra os papéis dos quinze arquivos. O extrator e o auditor oficiais estão implementados; o adaptador de treino atual continua fixado no espelho para reproduzir o Experimento 001. A próxima versão deverá ler os originais diretamente, com teste oficial fisicamente separado. [Plano da migração](OFFICIAL_DATA_MIGRATION.md).
+Origem: a distribuição oficial completa foi recebida, verificada e auditada em 7/11/2026. `official-source-selection-v1.json` registra os papéis dos quinze arquivos. O novo adaptador lê os originais com teste oficial fisicamente separado. O adaptador histórico continua disponível para reproduzir o Experimento 001. [Migração](OFFICIAL_DATA_MIGRATION.md) e [Experimento 002](EXPERIMENT_002.md).
 
 Fluxo executável atual: CSVs reais fixados por SHA-256 → normalização e quarentena por pedido → SQLite somente leitura para análise → perfis de treino congelados → popularidade/repetição/cosseno por cesta → relatório de validação. Contextos preservam geohash, rede e dia da semana para próximas etapas; ainda não são filtros de candidatos. SQLite foi escolhido para integridade e transações sem dependência de execução adicional; a arquitetura abaixo permanece a visão de evolução.
 
@@ -25,7 +25,9 @@ flowchart LR
   F -. extensão .-> MCP[Adaptador MCP]
 ```
 
-Python para dados e modelos; DuckDB/Parquet são opções futuras de processamento; FastAPI para contratos; React/TypeScript e tokens CSS para interface. Versões de dependências e arquivo de lock serão fixados ao implementar cada componente e verificar compatibilidade. Não incluir dependências vazias apenas para aparência de completude.
+Python para dados e modelos; DuckDB/Parquet são opções futuras; FastAPI/Pydantic já servem os contratos de catálogo. React/TypeScript e tokens CSS permanecem previstos para interface. O diagrama mostra a evolução proposta, incluindo partes futuras. As dependências de API e testes estão fixadas em `requirements-api.lock` como constraints de versões, sem hashes de distribuição.
+
+A API compartilha funções de domínio com a CLI, abre conexões SQLite somente leitura por operação e serve busca, detalhe, culinárias e procedência. Validação rejeita parâmetros desconhecidos, limites inválidos e valores de preço não finitos. Base ausente, inválida ou sintética retorna 503. A prontidão verifica estrutura e metadados declarados, sem recalcular todo o hash por requisição. Logs locais omitem texto da busca, com IDs de requisição e duração. [Execução e limites](../apps/api/README.md).
 
 Contratos candidatos: `search_catalog(query, filters, limit)`, `recommend(profile_id, filters, limit)`, `get_item(item_id)`, `get_evaluation(run_id)`. Saídas terão IDs, metadados, origem, versão e avisos de cobertura. Nunca aceitar SQL, código arbitrário ou URLs fornecidas pelo LLM para execução.
 

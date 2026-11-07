@@ -11,6 +11,58 @@ import tempfile
 from .dataset import file_hash, open_dataset
 
 
+class CatalogUnavailable(ValueError):
+    """The configured index is missing or does not meet its data contract."""
+
+
+def open_catalog(index: Path, *, allow_test_data=False):
+    if not index.is_file():
+        raise CatalogUnavailable("Catalog index does not exist; build-catalog first")
+    connection = sqlite3.connect(index.resolve().as_uri() + "?mode=ro", uri=True)
+    connection.row_factory = sqlite3.Row
+    try:
+        row = connection.execute("SELECT value FROM metadata WHERE key='catalog_manifest'").fetchone()
+        manifest = json.loads(row[0]) if row else {}
+        if not isinstance(manifest, dict) or manifest.get("schema_version") != 1 or manifest.get("index_version") != "lexical-fts5-v1":
+            raise CatalogUnavailable("Unsupported catalog index")
+        if manifest.get("data_kind") != "official_dhrd" and not allow_test_data:
+            raise CatalogUnavailable("Search requires official real data")
+        return connection, manifest
+    except Exception:
+        connection.close()
+        raise
+
+
+def catalog_metadata(index: Path, *, allow_test_data=False):
+    connection, manifest = open_catalog(index, allow_test_data=allow_test_data)
+    try:
+        # Readiness checks structure without scanning the complete million-row catalog.
+        connection.execute("SELECT vendor_id,product_id,name,unit_price,primary_cuisine FROM items LIMIT 1").fetchone()
+        connection.execute("SELECT rowid FROM item_search LIMIT 1").fetchone()
+        return manifest
+    finally:
+        connection.close()
+
+
+def catalog_cuisines(index: Path, *, allow_test_data=False):
+    connection, manifest = open_catalog(index, allow_test_data=allow_test_data)
+    try:
+        rows = connection.execute("SELECT primary_cuisine AS name,COUNT(*) AS products FROM items GROUP BY primary_cuisine ORDER BY primary_cuisine")
+        return {"cuisines": [dict(row) for row in rows], "provenance": manifest}
+    finally:
+        connection.close()
+
+
+def catalog_item(index: Path, vendor_id: str, product_id: str, *, allow_test_data=False):
+    connection, manifest = open_catalog(index, allow_test_data=allow_test_data)
+    try:
+        row = connection.execute("SELECT vendor_id,product_id,name,unit_price,primary_cuisine FROM items WHERE vendor_id=? AND product_id=?",
+                                 (vendor_id, product_id)).fetchone()
+        return {"item": dict(row), "provenance": manifest} if row else None
+    finally:
+        connection.close()
+
+
 def build_catalog(database: Path, output: Path, *, allow_test_data=False) -> dict:
     if output.exists() or output.resolve() == database.resolve():
         raise ValueError("Choose a new catalog output path")
@@ -80,17 +132,8 @@ def search_catalog(index: Path, query: str, *, cuisine=None, min_price=None, max
         raise ValueError("Minimum price exceeds maximum price")
     if cuisine is not None and (not isinstance(cuisine, str) or not cuisine.strip() or len(cuisine) > 200):
         raise ValueError("Cuisine must be a nonempty catalog label")
-    if not index.is_file():
-        raise ValueError("Catalog index does not exist; build-catalog first")
-    connection = sqlite3.connect(index.resolve().as_uri() + "?mode=ro", uri=True)
-    connection.row_factory = sqlite3.Row
+    connection, manifest = open_catalog(index, allow_test_data=allow_test_data)
     try:
-        row = connection.execute("SELECT value FROM metadata WHERE key='catalog_manifest'").fetchone()
-        manifest = json.loads(row[0]) if row else {}
-        if manifest.get("index_version") != "lexical-fts5-v1":
-            raise ValueError("Unsupported catalog index")
-        if manifest.get("data_kind") != "official_dhrd" and not allow_test_data:
-            raise ValueError("Search requires official real data")
         conditions = ["item_search MATCH ?"]
         parameters = [' AND '.join('"' + token + '"' for token in tokens)]
         for value, condition in ((cuisine, "i.primary_cuisine=?"), (min_price, "i.unit_price>=?"), (max_price, "i.unit_price<=?")):

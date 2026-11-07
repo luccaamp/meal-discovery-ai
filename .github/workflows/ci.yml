@@ -13,7 +13,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - run: python -m pip install -e .
+      - run: python -m pip install -c requirements-api.lock -e ".[api,test]"
+      - run: python -m pip check
       - run: python -m unittest discover -s tests -v
       - run: python -m meal_discovery --help
       - run: python scripts/fetch_hyperhawkes.py --help
